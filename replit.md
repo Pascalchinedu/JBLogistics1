@@ -64,12 +64,16 @@ src/
 3. Express Delivery - Ultra-fast 1-2 hour delivery service
 4. Special Services - COD and emergency delivery options
 
-## Recent Changes (Nov 9, 2025)
+## Recent Changes (Nov 10, 2025)
 - Configured Vite for Replit environment (port 5000, host 0.0.0.0)
 - Set up HMR for WSS proxy support
 - Configured deployment settings for autoscale
 - Fixed unused import warnings in firebase.ts
 - Verified build process works correctly
+- **Fixed image display issues**: Renamed all image files in public folder to remove spaces
+  - Old: `WhatsApp Image 2025-08-22 at 00.35.18_2c489b1f.jpg`
+  - New: `delivery-person-1.jpg`, `delivery-person-2.jpg`, etc.
+- Updated all image references in Hero.tsx, Industries.tsx, and WhyChooseUs.tsx
 
 ## Development Notes
 - The app uses Firebase Firestore for data storage

@@ -141,7 +141,7 @@ const WhyChooseUs = () => {
           <div className="bg-gradient-to-r from-amber-900 to-amber-700 rounded-lg p-8 text-white relative overflow-hidden">
             <div className="absolute inset-0 opacity-20">
               <img
-                src="/WhatsApp Image 2025-08-22 at 00.44.08_4064b679.jpg"
+                src="/delivery-person-4.jpg"
                 alt="HELLO OCTOBER promotional - worker in safety vest"
                 className="w-full h-full object-cover"
               />

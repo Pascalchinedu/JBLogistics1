@@ -40,28 +40,28 @@ const Industries = () => {
       title: 'E-commerce',
       description: 'Fast delivery solutions for online retailers with same-day and next-day options',
       features: ['Order fulfillment', 'Last-mile delivery', 'Returns management', 'Real-time tracking'],
-      image: '/WhatsApp Image 2025-08-22 at 00.35.18_2c489b1f.jpg',
+      image: '/delivery-person-1.jpg',
     },
     {
       icon: Package2,
       title: 'Healthcare & Pharmaceuticals',
       description: 'Specialized medical logistics with temperature-controlled and licensed transport',
       features: ['Medical equipment transport', 'Temperature-controlled delivery', 'Licensed pharmaceutical logistics', 'Hospital supply chains'],
-      image: '/WhatsApp Image 2025-08-22 at 00.35.18_308b032c.jpg',
+      image: '/delivery-person-2.jpg',
     },
     {
       icon: Store,
       title: 'Food Vendor',
       description: 'Specialized food and perishable goods delivery with cold chain capabilities',
       features: ['Fresh produce delivery', 'Restaurant supply chains', 'Cold chain logistics', 'Perishable goods handling'],
-      image: '/WhatsApp Image 2025-08-22 at 00.44.08_4064b679.jpg',
+      image: '/delivery-person-4.jpg',
     },
     {
       icon: Factory,
       title: 'Wholesale',
       description: 'Bulk shipping and distribution solutions for wholesale businesses',
       features: ['Bulk transportation', 'Warehousing solutions', 'Distribution networks', 'Cost optimization'],
-      image: '/WhatsApp Image 2025-08-22 at 00.37.35_b6737063.jpg',
+      image: '/delivery-person-3.jpg',
     },
   ];
 
