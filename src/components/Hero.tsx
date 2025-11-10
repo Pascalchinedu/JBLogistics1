@@ -148,7 +148,7 @@ const Hero = () => {
             }`}>
               <div className="aspect-w-4 aspect-h-3 lg:aspect-w-3 lg:aspect-h-4">
                 <img
-                  src="/delivery-person-1.jpg"
+                  src="/hero-delivery-van.jpg"
                   alt="We're still Delivering - delivery person with yellow van"
                   className="object-cover rounded-lg shadow-2xl hover:shadow-3xl transition-shadow duration-300 professional-shadow"
                 />
