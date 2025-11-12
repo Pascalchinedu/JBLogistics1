@@ -118,15 +118,15 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             <div className="space-y-4">
               <div>
                 <p className="text-sm text-gray-600 mb-1">Bank Name</p>
-                <p className="text-lg font-bold text-gray-900">Guaranty Trust Bank</p>
+                <p className="text-lg font-bold text-gray-900">Moniepoint</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600 mb-1">Account Number</p>
-                <p className="text-lg font-bold text-gray-900">0123456789</p>
+                <p className="text-lg font-bold text-gray-900">6746468396</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600 mb-1">Account Name</p>
-                <p className="text-lg font-bold text-gray-900">JB Logistics Limited</p>
+                <p className="text-lg font-bold text-gray-900">JAYBON GLOBAL LOGISTICS SERVICES</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600 mb-1">Amount</p>
@@ -137,17 +137,17 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Transaction Reference <span className="text-red-500">*</span>
+              Payment Reference / Transaction ID <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               value={transactionReference}
               onChange={(e) => setTransactionReference(e.target.value)}
-              placeholder="Enter your transaction reference"
+              placeholder="Enter your payment reference or transaction ID"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
             />
             <p className="text-xs text-gray-500 mt-1">
-              Enter the reference from your bank transfer confirmation
+              Enter the reference/transaction ID from your bank transfer confirmation
             </p>
           </div>
 

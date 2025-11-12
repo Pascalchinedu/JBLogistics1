@@ -31,11 +31,15 @@ Firebase configuration is hardcoded in `src/lib/firebase.ts` (as requested by or
 ## Key Features
 1. **Authentication System**: User registration and login with Firebase
 2. **Shipment Management**: Create and track packages
-3. **Payment Integration**: Paystack for card payments, bank transfers
+3. **Payment Integration**: 
+   - Paystack for card payments and automated bank transfers
+   - Manual bank transfer to Moniepoint account (6746468396)
+   - Payment reference verification before shipment creation
 4. **Service Pages**: Local bike delivery, nationwide delivery, express delivery
 5. **Real-time Tracking**: Package tracking with status updates
 6. **Admin Panel**: Status update functionality
 7. **Responsive Design**: Mobile-first, works on all devices
+8. **Webhook Integration**: n8n webhook receives all shipment data including payment reference
 
 ## Project Structure
 ```
@@ -63,6 +67,14 @@ src/
 2. Nationwide Delivery - Interstate shipping to all 36 states
 3. Express Delivery - Ultra-fast 1-2 hour delivery service
 4. Special Services - COD and emergency delivery options
+
+## Recent Changes (Nov 12, 2025)
+- **Configured Payment System with Manual Bank Transfer:**
+  - Updated PaymentModal.tsx with Moniepoint bank details
+  - Bank: Moniepoint, Account: 6746468396, Name: JAYBON GLOBAL LOGISTICS SERVICES
+  - Users must provide payment reference/transaction ID before shipment creation
+  - Payment reference is sent to n8n webhook for verification
+  - Works for both Normal Delivery and Waybill Delivery forms
 
 ## Recent Changes (Nov 10, 2025)
 - Configured Vite for Replit environment (port 5000, host 0.0.0.0)
