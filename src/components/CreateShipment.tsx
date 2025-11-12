@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Package, MapPin, User, Phone, Mail, Truck, CheckCircle, Copy, AlertCircle, Bike, Zap } from 'lucide-react';
+import { Package, MapPin, Truck, CheckCircle, Copy, AlertCircle } from 'lucide-react';
 import Header from './Header';
 import { db } from '../lib/firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
@@ -18,8 +18,6 @@ const PORT_HARCOURT_AREAS = [
   'Port Harcourt Township', 'D-Line', 'Woji', 'Mile 1', 'Mile 2', 'Mile 3', 'Other'
 ];
 
-const PACKAGE_TYPES = ['Document', 'Small Parcel', 'Medium Parcel', 'Large Parcel', 'Heavy Cargo'];
-const WEIGHT_OPTIONS = ['Less than 1kg', '1-5kg', '5-10kg', '10-20kg', '20-50kg', '50kg+'];
 
 interface FormData {
   senderName: string;
