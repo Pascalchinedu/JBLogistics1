@@ -69,6 +69,21 @@ src/
 4. Special Services - COD and emergency delivery options
 
 ## Recent Changes (Nov 12, 2025)
+
+### Animation & Image Updates
+- **Implemented Scroll-Based Animations:**
+  - FAQ section now has sequential rise-up animation - each question appears one after another with 150ms staggering
+  - Track Your Package section (NavigationTabs) has smooth rise-up animation for buttons and content
+  - Animations use Intersection Observer API for performance
+  - Auto-cleanup after trigger to prevent redundant state updates
+  
+- **Added New Professional Images:**
+  - Generated and added `our-story-delivery.png` - Professional delivery service image for About page "Our Story" section
+  - Generated and added `logistics-worker-yellow.png` - Logistics worker image for "Explore Logistics Solutions by Industry" section
+  - Images are fully responsive and properly optimized
+  - All placeholder images replaced with professional logistics photography
+
+### Payment System Configuration
 - **Configured Payment System with Manual Bank Transfer:**
   - Updated PaymentModal.tsx with Moniepoint bank details
   - Bank: Moniepoint, Account: 6746468396, Name: JAYBON GLOBAL LOGISTICS SERVICES
