@@ -1,0 +1,43 @@
+It sounds like you're working on improving the user experience of your logistics app with some dynamic animations! Here is a simple yet detailed prompt you can use with your coding assistant to implement the desired effects and address the missing images.
+
+## 🚀 Animation & Image Implementation Prompt
+
+Please implement the following updates to the logistics app's front-end code, ensuring the animations are smooth and appear sequentially:
+
+---
+
+### 1. Sequential Rise-Up Animation for FAQ Section
+
+Apply a **sequential animation** to the FAQ items (from `image_63ecdc.png`) so they appear one by one, rising from the bottom of the screen to their final position.
+
+* **Target Elements:** Each individual FAQ question container (**"What areas do you deliver to?", "How do I track my package?",** etc.).
+* **Animation Details:**
+    * The items should start **off-screen** (below) and **fade in** as they move up.
+    * The first item should start animating immediately on load.
+    * Each subsequent item must begin its animation **only after the previous item has finished or is near its completion** (staggered delay).
+    * Use a **smooth, gentle easing** function (e.g., `ease-out`) for the movement.
+
+---
+
+### 2. Apply Rise-Up Animation to Tracking Section Elements
+
+Apply a similar **rise-up animation** to the key elements within the "Track Your Package" section (from `image_63ed5a.png`).
+
+* **Target Elements:**
+    * The main navigational buttons (`Track`, `Ship`, `Account`).
+    * The heading text (`Track Your Package`).
+    * The main action button (`Go to Tracking Page`).
+* **Animation Details:** Stagger the the appearance of these elements in a logical flow (e.g., navigation buttons, then the heading, then the action button) using a **rise-up/fade-in** effect.
+
+---
+
+### 3. Missing Image Placeholder Implementation
+
+In the sections where images are currently missing or placeholders are needed (based on the screenshots you will provide later), please implement the following:
+
+* Add a **placeholder image tag or component** in the designated areas.
+* The placeholder should be visually neutral (e.g., a simple gray box with a subtle icon) until the correct images can be uploaded and linked.
+
+---
+
+**Goal:** Ensure the animations are applied using modern CSS/JS techniques (e.g., using **CSS Keyframes/Transitions** or a library like **React Spring, Framer Motion, or simple JQuery/Vanilla JS** depending on the framework) to maintain performance and cross-browser compatibility.

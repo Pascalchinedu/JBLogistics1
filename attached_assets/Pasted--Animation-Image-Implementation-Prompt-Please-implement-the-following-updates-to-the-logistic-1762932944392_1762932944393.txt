@@ -1,0 +1,47 @@
+# 🚀 Animation & Image Implementation Prompt
+
+Please implement the following updates to the logistics app's front-end code, ensuring the animations are smooth and appear sequentially:
+
+---
+
+## 1. Sequential Rise-Up Animation for FAQ Section
+Apply a **sequential animation** to the FAQ items so they appear one by one, rising from the bottom of the screen to their final position.
+
+**Target Elements:** Each individual FAQ question container ("What areas do you deliver to?", "How do I track my package?", etc.)
+
+**Animation Details:**
+* Items should start **off-screen** (below) and **fade in** as they move up
+* First item animates immediately on scroll into view
+* Each subsequent item begins animation **only after the previous item has finished or is near completion** (staggered delay)
+* Use **smooth, gentle easing** function (e.g., `ease-out`) for movement
+
+---
+
+## 2. Rise-Up Animation for Tracking Section Elements
+Apply similar **rise-up animation** to key elements within the "Track Your Package" section.
+
+**Target Elements:**
+* Main navigational buttons (`Track`, `Ship`, `Account`)
+* Heading text (`Track Your Package`)
+* Main action button (`Go to Tracking Page`)
+
+**Animation Details:** Stagger the appearance of these elements in logical flow (navigation buttons → heading → action button) using **rise-up/fade-in** effect.
+
+---
+
+## 3. Missing Image Placeholder Implementation
+For sections where images are currently missing (based on screenshots provided):
+* Add **placeholder image tag or component** in designated areas
+* Placeholder should be visually neutral (gray box with subtle icon) until correct images are uploaded
+
+---
+
+## Implementation Requirements
+* Use modern CSS/JS techniques: **CSS Keyframes/Transitions** or **Intersection Observer API**
+* Ensure performance optimization and cross-browser compatibility
+* Animations trigger once on scroll into view
+* Mobile-responsive and smooth on all devices
+
+---
+
+**Note:** Screenshots will be provided to identify missing image locations.
