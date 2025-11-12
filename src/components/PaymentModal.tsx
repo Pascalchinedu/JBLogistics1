@@ -21,19 +21,35 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 }) => {
   const [showBankDetails, setShowBankDetails] = useState(false);
   const [transactionReference, setTransactionReference] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setShowBankDetails(true);
+      setTransactionReference('');
+      setIsSubmitting(false);
+    } else {
+      setShowBankDetails(false);
+      setTransactionReference('');
+      setIsSubmitting(false);
     }
   }, [isOpen]);
 
-  const handleManualTransferSubmit = () => {
+  const handleManualTransferSubmit = async () => {
     if (!transactionReference.trim()) {
       alert('Please enter your transaction reference');
       return;
     }
-    onPaymentSuccess(transactionReference);
+    
+    setIsSubmitting(true);
+    try {
+      await onPaymentSuccess(transactionReference);
+    } catch (error) {
+      console.error('Payment submission error:', error);
+      alert('There was an error submitting your payment. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (showBankDetails) {
@@ -102,15 +118,24 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           <div className="flex space-x-3">
             <button
               onClick={onClose}
-              className="flex-1 border-2 border-gray-300 text-gray-700 hover:bg-gray-100 px-4 py-3 rounded-full font-semibold transition-all"
+              disabled={isSubmitting}
+              className="flex-1 border-2 border-gray-300 text-gray-700 hover:bg-gray-100 px-4 py-3 rounded-full font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               onClick={handleManualTransferSubmit}
-              className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-3 rounded-full font-semibold transition-all"
+              disabled={isSubmitting}
+              className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-3 rounded-full font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Submit Reference
+              {isSubmitting ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black mr-2"></div>
+                  Processing...
+                </div>
+              ) : (
+                'Submit Reference'
+              )}
             </button>
           </div>
         </div>

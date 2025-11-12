@@ -3,6 +3,7 @@ import { Star, Quote } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import CurvyDivider from './CurvyDivider';
+import { useStaggerAnimation } from '../hooks/useScrollAnimation';
 
 const CustomerTestimonials = () => {
   const { isAuthenticated } = useAuth();
@@ -16,6 +17,7 @@ const CustomerTestimonials = () => {
       setIsNavigating(false);
     }, 150);
   };
+  
   const testimonials = [
     {
       quote: "JB Logistics has transformed our e-commerce business. Their same-day delivery in Port Harcourt and reliable nationwide shipping have helped us grow our customer base significantly. On time, every time - they truly deliver on their promise!",
@@ -51,6 +53,11 @@ const CustomerTestimonials = () => {
     }
   ];
 
+  const { ref: testimonialsRef, visibleItems } = useStaggerAnimation(testimonials.length, {
+    threshold: 0.15,
+    triggerOnce: true
+  });
+
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, index) => (
       <Star
@@ -74,9 +81,16 @@ const CustomerTestimonials = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div ref={testimonialsRef} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+            <div 
+              key={index} 
+              className={`bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-all duration-700 ease-out ${
+                visibleItems[index]
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-12 scale-95'
+              }`}
+            >
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
                   <div className="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center">

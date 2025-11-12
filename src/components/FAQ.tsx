@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import CurvyDivider from './CurvyDivider';
+import { useStaggerAnimation } from '../hooks/useScrollAnimation';
 
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const [visibleItems, setVisibleItems] = useState<boolean[]>([]);
-  const sectionRef = useRef<HTMLDivElement>(null);
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -38,37 +37,10 @@ const FAQ = () => {
     }
   ];
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          const items = new Array(faqs.length).fill(false);
-          setVisibleItems(items);
-          
-          const timeouts: NodeJS.Timeout[] = [];
-          items.forEach((_, index) => {
-            const timeout = setTimeout(() => {
-              setVisibleItems(prev => {
-                const updated = [...prev];
-                updated[index] = true;
-                return updated;
-              });
-            }, index * 150);
-            timeouts.push(timeout);
-          });
-          
-          observer.unobserve(entry.target);
-        }
-      },
-      { threshold: 0.2 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [faqs.length]);
+  const { ref: sectionRef, visibleItems } = useStaggerAnimation(faqs.length, {
+    threshold: 0.2,
+    triggerOnce: true
+  });
 
   return (
     <section ref={sectionRef} className="py-16 lg:py-20 bg-gray-50 curvy-divider">
@@ -86,7 +58,7 @@ const FAQ = () => {
           {faqs.map((faq, index) => (
             <div 
               key={index} 
-              className={`faq-item border-b border-gray-200 last:border-b-0 transition-all duration-700 ease-out ${
+              className={`border-b border-gray-200 last:border-b-0 transition-all duration-700 ease-out ${
                 visibleItems[index] 
                   ? 'opacity-100 translate-y-0' 
                   : 'opacity-0 translate-y-8'

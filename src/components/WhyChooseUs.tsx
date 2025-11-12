@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { CheckCircle, Star, Users, Award } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CurvyDivider from './CurvyDivider';
+import { useStaggerAnimation } from '../hooks/useScrollAnimation';
 
 const WhyChooseUs = () => {
   const navigate = useNavigate();
@@ -48,6 +49,11 @@ const WhyChooseUs = () => {
       description: 'Award-winning logistics solutions trusted by thousands of businesses across Nigeria',
     },
   ];
+
+  const { ref: benefitsRef, visibleItems: benefitsVisible } = useStaggerAnimation(benefits.length, {
+    threshold: 0.15,
+    triggerOnce: true
+  });
 
   const stats = [
     { number: '50,000+', label: 'Packages Delivered Monthly', isCounter: true },
@@ -117,11 +123,21 @@ const WhyChooseUs = () => {
         </div>
 
         {/* Benefits Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div ref={benefitsRef} className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {benefits.map((benefit, index) => {
             const Icon = benefit.icon;
+            const isLeft = index % 2 === 0;
             return (
-              <div key={index} className="bg-gray-50 p-8 rounded-lg hover:bg-gray-100 transition-colors professional-shadow">
+              <div 
+                key={index} 
+                className={`bg-gray-50 p-8 rounded-lg hover:bg-gray-100 transition-all duration-700 ease-out professional-shadow ${
+                  benefitsVisible[index]
+                    ? 'opacity-100 translate-x-0'
+                    : isLeft 
+                      ? 'opacity-0 -translate-x-12'
+                      : 'opacity-0 translate-x-12'
+                }`}
+              >
                 <div className="flex items-start space-x-4">
                   <div className="w-12 h-12 bg-yellow-400 rounded-lg flex items-center justify-center flex-shrink-0">
                     <Icon className="h-6 w-6 text-black" />

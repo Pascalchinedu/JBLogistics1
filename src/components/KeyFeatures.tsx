@@ -1,10 +1,23 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import CurvyDivider from './CurvyDivider';
+import { useStaggerAnimation } from '../hooks/useScrollAnimation';
 
 const KeyFeatures = () => {
   const navigate = useNavigate();
   const [isNavigating, setIsNavigating] = React.useState(false);
+  
+  const cards = [
+    { title: 'E-commerce Solutions', desc: 'Fast, reliable delivery for online retailers across Nigeria' },
+    { title: 'Manufacturing', desc: 'Supply chain management and B2B logistics solutions' },
+    { title: 'Retail Distribution', desc: 'Store-to-store and warehouse distribution services' },
+    { title: 'Wholesale', desc: 'Bulk shipping and inventory management solutions' }
+  ];
+  
+  const { ref: cardsRef, visibleItems } = useStaggerAnimation(cards.length, {
+    threshold: 0.2,
+    triggerOnce: true
+  });
 
   const handleNavigation = (path: string) => {
     setIsNavigating(true);
@@ -41,23 +54,20 @@ const KeyFeatures = () => {
               From e-commerce and retail to manufacturing and wholesale, JB Logistics turns delivery challenges into growth opportunities across Nigeria
             </h3>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-gray-50 p-6 rounded-lg professional-shadow">
-                <h4 className="font-semibold text-gray-900 mb-2">E-commerce Solutions</h4>
-                <p className="text-gray-600 text-sm">Fast, reliable delivery for online retailers across Nigeria</p>
-              </div>
-              <div className="bg-gray-50 p-6 rounded-lg professional-shadow">
-                <h4 className="font-semibold text-gray-900 mb-2">Manufacturing</h4>
-                <p className="text-gray-600 text-sm">Supply chain management and B2B logistics solutions</p>
-              </div>
-              <div className="bg-gray-50 p-6 rounded-lg professional-shadow">
-                <h4 className="font-semibold text-gray-900 mb-2">Retail Distribution</h4>
-                <p className="text-gray-600 text-sm">Store-to-store and warehouse distribution services</p>
-              </div>
-              <div className="bg-gray-50 p-6 rounded-lg professional-shadow">
-                <h4 className="font-semibold text-gray-900 mb-2">Wholesale</h4>
-                <p className="text-gray-600 text-sm">Bulk shipping and inventory management solutions</p>
-              </div>
+            <div ref={cardsRef} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {cards.map((card, index) => (
+                <div 
+                  key={index}
+                  className={`bg-gray-50 p-6 rounded-lg professional-shadow transition-all duration-700 ease-out ${
+                    visibleItems[index] 
+                      ? 'opacity-100 translate-y-0 scale-100' 
+                      : 'opacity-0 translate-y-8 scale-95'
+                  }`}
+                >
+                  <h4 className="font-semibold text-gray-900 mb-2">{card.title}</h4>
+                  <p className="text-gray-600 text-sm">{card.desc}</p>
+                </div>
+              ))}
             </div>
             
             <button 
