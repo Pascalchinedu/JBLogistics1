@@ -35,9 +35,13 @@ Firebase configuration is hardcoded in `src/lib/firebase.ts` (as requested by or
    - Paystack for card payments and automated bank transfers
    - Manual bank transfer to Moniepoint account (6746468396)
    - Payment reference verification before shipment creation
+   - Admin payment management system with confirmation workflow
 4. **Service Pages**: Local bike delivery, nationwide delivery, express delivery
 5. **Real-time Tracking**: Package tracking with status updates
-6. **Admin Panel**: Status update functionality
+6. **Admin Panel**: 
+   - Package status update functionality
+   - Payment management with filtering (All/Processing/Received)
+   - Admin password: jblogistics2025
 7. **Responsive Design**: Mobile-first, works on all devices
 8. **Webhook Integration**: n8n webhook receives all shipment data including payment reference
 
@@ -69,6 +73,22 @@ src/
 4. Special Services - COD and emergency delivery options
 
 ## Recent Changes (Nov 12, 2025)
+
+### Admin Payment Management System
+- **Implemented Complete Payment Management:**
+  - Created Payment interface in `src/lib/firebase.ts` with fields: userId, trackingId, customerName, customerEmail, customerPhone, amount, paymentMethod, paymentReference, status, confirmedBy, confirmedAt
+  - Built `AdminPaymentManagement.tsx` component with comprehensive payment table displaying:
+    - Payment ID, Tracking ID, Customer info, Amount, Payment Method, Date, Status, and Action columns
+    - Status filtering with All/Processing/Received buttons showing live counts
+    - Confirm Payment button for processing payments
+    - Optimistic UI updates for instant feedback
+  - Updated `AdminStatusUpdate.tsx` with tab navigation between "Packages" and "Payments" tabs
+  - Integrated payment record creation in both `CreateShipment.tsx` and `CreateWaybillShipment.tsx` forms
+  - Updated user `Dashboard.tsx` to display payment status column:
+    - Dual-query loading strategy (shipments first, then payments)
+    - Payment lookup map by trackingId for efficient status retrieval
+    - Payment status badges in both overview and full shipments tables (yellow for Processing, green for Received, gray for Not Recorded)
+  - Filter state persists after confirming payments for seamless admin workflow
 
 ### Animation & Image Updates
 - **Implemented Scroll-Based Animations:**
