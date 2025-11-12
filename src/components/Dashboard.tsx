@@ -21,6 +21,7 @@ interface Package {
   packageType?: string;
   currentLocation?: string;
   createdAt: any;
+  paymentStatus?: 'processing' | 'received' | 'not_recorded';
 }
 
 const Dashboard = () => {
@@ -188,6 +189,32 @@ const Dashboard = () => {
           setShipments(shipmentsData);
         }
       }
+
+      try {
+        const paymentsQuery = query(
+          collection(db, 'payments'),
+          where('userId', '==', user.uid)
+        );
+
+        const paymentsSnapshot = await getDocs(paymentsQuery);
+        const paymentLookup: Record<string, string> = {};
+        
+        paymentsSnapshot.docs.forEach(doc => {
+          const paymentData = doc.data();
+          if (paymentData.trackingId) {
+            paymentLookup[paymentData.trackingId] = paymentData.status || 'processing';
+          }
+        });
+
+        setShipments(prevShipments => 
+          prevShipments.map(shipment => ({
+            ...shipment,
+            paymentStatus: (paymentLookup[shipment.trackingNumber || shipment.waybillNumber || ''] as 'processing' | 'received') || 'not_recorded'
+          }))
+        );
+      } catch (paymentError) {
+        console.warn('Error loading payments:', paymentError);
+      }
     } catch (error) {
       console.error('Error loading shipments:', error);
       setShipments([]);
@@ -236,6 +263,29 @@ const Dashboard = () => {
         return 'bg-yellow-100 text-yellow-800';
       default:
         return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getPaymentStatusBadge = (paymentStatus?: 'processing' | 'received' | 'not_recorded') => {
+    switch (paymentStatus) {
+      case 'processing':
+        return (
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+            Processing
+          </span>
+        );
+      case 'received':
+        return (
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+            Received
+          </span>
+        );
+      default:
+        return (
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+            Not Recorded
+          </span>
+        );
     }
   };
 
@@ -375,6 +425,9 @@ const Dashboard = () => {
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Status
                           </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Payment
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
@@ -398,6 +451,9 @@ const Dashboard = () => {
                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(shipment.status)}`}>
                                   {shipment.status.charAt(0).toUpperCase() + shipment.status.slice(1)}
                                 </span>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                {getPaymentStatusBadge(shipment.paymentStatus)}
                               </td>
                             </tr>
                           );
@@ -468,6 +524,9 @@ const Dashboard = () => {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Status
                       </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Payment
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -491,6 +550,9 @@ const Dashboard = () => {
                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(shipment.status)}`}>
                               {shipment.status.charAt(0).toUpperCase() + shipment.status.slice(1)}
                             </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {getPaymentStatusBadge(shipment.paymentStatus)}
                           </td>
                         </tr>
                       );

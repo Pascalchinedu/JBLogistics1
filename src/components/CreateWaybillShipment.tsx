@@ -181,6 +181,21 @@ const CreateWaybillShipment = () => {
 
       console.log('Waybill package saved to Firestore with ID:', docRef.id);
 
+      const paymentData = {
+        userId: user?.uid || 'guest',
+        trackingId: generatedWaybillNumber,
+        customerName: formData.deliveryRecipientName,
+        customerEmail: formData.deliveryRecipientEmail,
+        amount: 3000,
+        paymentMethod: 'bank_transfer' as const,
+        paymentReference: reference,
+        status: 'processing' as const,
+        createdAt: Timestamp.now()
+      };
+
+      await addDoc(collection(db, 'payments'), paymentData);
+      console.log('Payment record created for waybill:', generatedWaybillNumber);
+
       const webhookPayload = {
         waybillNumber: generatedWaybillNumber,
         trackingNumber: generatedWaybillNumber,

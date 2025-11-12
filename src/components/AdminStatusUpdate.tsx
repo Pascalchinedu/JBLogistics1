@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Search, Lock, Package, MapPin, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
+import { Search, Lock, Package, MapPin, CheckCircle, AlertCircle, RefreshCw, CreditCard } from 'lucide-react';
 import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import Header from './Header';
+import AdminPaymentManagement from './AdminPaymentManagement';
 
 const ADMIN_PASSWORD = 'jblogistics2025';
 
@@ -24,6 +25,7 @@ const AdminStatusUpdate = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [activeTab, setActiveTab] = useState<'packages' | 'payments'>('packages');
   const [trackingNumber, setTrackingNumber] = useState('');
   const [packageData, setPackageData] = useState<PackageData | null>(null);
   const [newStatus, setNewStatus] = useState('');
@@ -239,21 +241,58 @@ const AdminStatusUpdate = () => {
           <div className="text-center">
             <div className="flex justify-center mb-6">
               <div className="w-16 h-16 bg-yellow-400 rounded-lg flex items-center justify-center">
-                <Package className="h-8 w-8 text-black" />
+                {activeTab === 'packages' ? (
+                  <Package className="h-8 w-8 text-black" />
+                ) : (
+                  <CreditCard className="h-8 w-8 text-black" />
+                )}
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Update Package Status
+              Admin Dashboard
             </h1>
             <p className="text-xl text-amber-100 max-w-2xl mx-auto">
-              Search and update package tracking information
+              Manage packages and payments
             </p>
           </div>
         </div>
       </section>
 
+      <section className="py-8 bg-white border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap justify-center gap-4">
+            <button
+              onClick={() => setActiveTab('packages')}
+              className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-semibold transition-all ${
+                activeTab === 'packages'
+                  ? 'bg-yellow-400 text-black shadow-md'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <Package className="h-5 w-5" />
+              <span>Package Management</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('payments')}
+              className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-semibold transition-all ${
+                activeTab === 'payments'
+                  ? 'bg-yellow-400 text-black shadow-md'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <CreditCard className="h-5 w-5" />
+              <span>Payment Management</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
       <section className="py-16 lg:py-24 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          {activeTab === 'payments' ? (
+            <AdminPaymentManagement />
+          ) : (
+          <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-lg p-8 shadow-lg mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
               Search Package
@@ -441,6 +480,8 @@ const AdminStatusUpdate = () => {
                 </div>
               </form>
             </div>
+          )}
+          </div>
           )}
         </div>
       </section>

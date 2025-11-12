@@ -189,6 +189,21 @@ const CreateShipment = () => {
       console.log('Package saved to Firestore with ID:', docRef.id);
 
       const price = formData.serviceType.includes('Local Bike') ? '3000' : '5000';
+      
+      const paymentData = {
+        userId: user?.uid || 'guest',
+        trackingId: generatedTrackingNumber,
+        customerName: formData.senderName,
+        customerEmail: formData.senderEmail,
+        amount: parseFloat(price),
+        paymentMethod: 'bank_transfer' as const,
+        paymentReference: reference,
+        status: 'processing' as const,
+        createdAt: Timestamp.now()
+      };
+
+      await addDoc(collection(db, 'payments'), paymentData);
+      console.log('Payment record created for tracking:', generatedTrackingNumber);
 
       const webhookPayload = {
         trackingNumber: generatedTrackingNumber,

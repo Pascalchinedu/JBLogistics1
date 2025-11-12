@@ -58,3 +58,18 @@ export interface Shipment {
   createdAt: Date | any;
   estimatedDelivery?: Date;
 }
+
+export interface Payment {
+  id: string;
+  userId: string;
+  trackingId: string;
+  customerName: string;
+  customerEmail: string;
+  amount: number;
+  paymentMethod: 'bank_transfer' | 'card' | 'other';
+  paymentReference: string;
+  status: 'processing' | 'received';
+  createdAt: Date | any;
+  confirmedAt?: Date | any;
+  confirmedBy?: string;
+}
