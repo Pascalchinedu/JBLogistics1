@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import CurvyDivider from './CurvyDivider';
 
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [visibleItems, setVisibleItems] = useState<boolean[]>([]);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -36,8 +38,40 @@ const FAQ = () => {
     }
   ];
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          const items = new Array(faqs.length).fill(false);
+          setVisibleItems(items);
+          
+          const timeouts: NodeJS.Timeout[] = [];
+          items.forEach((_, index) => {
+            const timeout = setTimeout(() => {
+              setVisibleItems(prev => {
+                const updated = [...prev];
+                updated[index] = true;
+                return updated;
+              });
+            }, index * 150);
+            timeouts.push(timeout);
+          });
+          
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [faqs.length]);
+
   return (
-    <section className="py-16 lg:py-20 bg-gray-50 curvy-divider">
+    <section ref={sectionRef} className="py-16 lg:py-20 bg-gray-50 curvy-divider">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -50,7 +84,14 @@ const FAQ = () => {
 
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           {faqs.map((faq, index) => (
-            <div key={index} className="faq-item border-b border-gray-200 last:border-b-0">
+            <div 
+              key={index} 
+              className={`faq-item border-b border-gray-200 last:border-b-0 transition-all duration-700 ease-out ${
+                visibleItems[index] 
+                  ? 'opacity-100 translate-y-0' 
+                  : 'opacity-0 translate-y-8'
+              }`}
+            >
               <button
                 onClick={() => toggleFAQ(index)}
                 className="w-full px-6 py-5 text-left hover:bg-gray-50 transition-colors focus:outline-none focus:bg-gray-50"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Package, Calculator, Truck, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -12,6 +12,8 @@ const NavigationTabs = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [pendingAction, setPendingAction] = useState<string | null>(null);
   const [isNavigating, setIsNavigating] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
   const handleNavigation = (path: string) => {
     setIsNavigating(true);
@@ -20,6 +22,24 @@ const NavigationTabs = () => {
       setIsNavigating(false);
     }, 150);
   };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   const tabs = [
     { id: 'track', label: 'Track', icon: Package },
@@ -124,10 +144,12 @@ const NavigationTabs = () => {
   };
 
   return (
-    <section className="bg-gray-50 py-8 curvy-divider">
+    <section ref={sectionRef} className="bg-gray-50 py-8 curvy-divider">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow-lg p-6">
-          <div className="flex flex-wrap justify-center mb-6">
+          <div className={`flex flex-wrap justify-center mb-6 transition-all duration-700 ease-out ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}>
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -146,7 +168,9 @@ const NavigationTabs = () => {
               );
             })}
           </div>
-          <div className="min-h-[120px] flex items-center">
+          <div className={`min-h-[120px] flex items-center transition-all duration-700 ease-out delay-300 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}>
             {renderTabContent()}
           </div>
         </div>

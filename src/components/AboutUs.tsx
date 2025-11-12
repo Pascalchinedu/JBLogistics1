@@ -113,8 +113,8 @@ const AboutUs = () => {
             </div>
             <div className="relative">
               <img
-                src="/WhatsApp Image 2025-08-22 at 00.35.18_2c489b1f.jpg"
-                alt="JB Logistics delivery service"
+                src="/our-story-delivery.png"
+                alt="JB Logistics delivery service - We're still Delivering"
                 className="w-full h-96 object-cover rounded-lg shadow-lg"
               />
               <div className="absolute -bottom-6 -right-6 bg-white p-6 rounded-lg shadow-xl">

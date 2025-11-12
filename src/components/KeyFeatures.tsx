@@ -26,11 +26,11 @@ const KeyFeatures = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
             <div className="flex justify-center lg:justify-start">
-              <div className="w-2/5 max-w-xs">
+              <div className="w-full max-w-md">
                 <img
-                  src="/WhatsApp Image 2025-08-22 at 00.35.18_308b032c.jpg"
-                  alt="Heavy shipment - white truck with NO NEED TO WORRY text"
-                  className="w-full h-48 object-cover rounded-lg shadow-lg professional-shadow"
+                  src="/logistics-worker-yellow.png"
+                  alt="JB Logistics delivery worker with package"
+                  className="w-full h-auto object-cover rounded-lg shadow-lg professional-shadow"
                 />
               </div>
             </div>
