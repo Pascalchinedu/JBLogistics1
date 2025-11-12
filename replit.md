@@ -74,6 +74,21 @@ src/
 
 ## Recent Changes (Nov 12, 2025)
 
+### UI/UX Improvements to Admin Panel and Package Selection Modal
+- **Package Type Modal Size Adjustment:**
+  - Reduced modal size on desktop/tablet screens from `max-w-2xl` to `max-w-lg` for a more moderate appearance
+  - Kept mobile view unchanged (full-width `max-w-2xl`) for better mobile UX
+  - File modified: `ShipmentTypeModal.tsx`
+
+- **Admin Payment Management Enhancements:**
+  - Removed "Method" and "Action" column headers from payment table for cleaner layout
+  - Added "Decline Payment" functionality with red decline button alongside green confirm button
+  - Added "Declined" status filter tab with live count
+  - Declined payments now show red status badge with X icon
+  - Updated Payment type to include 'declined' status with declinedAt and declinedBy fields
+  - Consolidated status badge and action buttons into single Status column for better space utilization
+  - Files modified: `AdminPaymentManagement.tsx`, `firebase.ts`
+
 ### Fixed Firebase Permissions Issue
 - **Root Cause:** The `payments` collection had no security rules defined, causing all writes to be blocked by the catch-all deny rule
 - **Fix Applied:** Added comprehensive security rules for the `payments` collection in `firestore.rules`:
