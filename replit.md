@@ -74,6 +74,17 @@ src/
 
 ## Recent Changes (Nov 12, 2025)
 
+### Fixed Firebase Permissions Issue
+- **Root Cause:** The `payments` collection had no security rules defined, causing all writes to be blocked by the catch-all deny rule
+- **Fix Applied:** Added comprehensive security rules for the `payments` collection in `firestore.rules`:
+  - `allow read: if request.auth != null` - Authenticated users can read payment records
+  - `allow create: if request.auth != null` - Authenticated users can create payment records
+  - `allow update: if request.auth != null` - Authenticated users can update payment status
+- **Action Required:** Deploy updated `firestore.rules` to Firebase Console (see DEPLOY_FIRESTORE_RULES.md for instructions)
+- **Files Modified:** `firestore.rules`
+
+## Previous Changes (Nov 12, 2025)
+
 ### Admin Payment Management System
 - **Implemented Complete Payment Management:**
   - Created Payment interface in `src/lib/firebase.ts` with fields: userId, trackingId, customerName, customerEmail, customerPhone, amount, paymentMethod, paymentReference, status, confirmedBy, confirmedAt
