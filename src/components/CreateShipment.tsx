@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Package, MapPin, Truck, CheckCircle, Copy, AlertCircle } from 'lucide-react';
+import { Package, MapPin, Truck, CheckCircle, Copy, AlertCircle, Bike, Zap } from 'lucide-react';
 import Header from './Header';
 import { db } from '../lib/firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
