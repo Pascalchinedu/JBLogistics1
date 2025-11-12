@@ -158,7 +158,6 @@ const CreateShipment = () => {
 
   const handlePaymentSuccess = async (reference: string) => {
     setShowPaymentModal(false);
-    setPaymentReference(reference);
     setIsSubmitting(true);
     setSubmitError('');
 
@@ -206,7 +205,7 @@ const CreateShipment = () => {
         serviceType: formData.serviceType,
         status: 'pending',
         price: price,
-        paymentReference: paymentReference,
+        paymentReference: reference,
         paymentStatus: 'paid',
         firestoreId: docRef.id,
         createdAt: new Date().toISOString(),
@@ -251,7 +250,7 @@ const CreateShipment = () => {
         receiverPhone: formData.receiverPhone,
         serviceType: formData.serviceType,
         price: price,
-        paymentReference: paymentReference,
+        paymentReference: reference,
         paymentStatus: 'paid',
       });
 
@@ -277,6 +276,7 @@ const CreateShipment = () => {
       }
 
       setTrackingNumber(generatedTrackingNumber);
+      setPaymentReference(reference);
       localStorage.removeItem('shipmentFormBackup');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {

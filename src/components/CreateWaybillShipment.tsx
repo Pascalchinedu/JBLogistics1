@@ -145,7 +145,6 @@ const CreateWaybillShipment = () => {
 
   const handlePaymentSuccess = async (reference: string) => {
     setShowPaymentModal(false);
-    setPaymentReference(reference);
     setIsSubmitting(true);
     setSubmitError('');
 
@@ -198,7 +197,7 @@ const CreateWaybillShipment = () => {
         packageDescription: formData.packageDescription,
         serviceType: 'Waybill Transfer',
         price: 3000,
-        paymentReference: paymentReference,
+        paymentReference: reference,
         paymentStatus: 'paid',
         status: 'pending',
         firestoreId: docRef.id,
@@ -245,7 +244,7 @@ const CreateWaybillShipment = () => {
         deliveryLandmark: formData.deliveryLandmark,
         serviceType: 'Waybill Transfer',
         price: '3000',
-        paymentReference: paymentReference,
+        paymentReference: reference,
         paymentStatus: 'paid',
       });
 
@@ -269,6 +268,7 @@ const CreateWaybillShipment = () => {
       }
 
       setWaybillNumber(generatedWaybillNumber);
+      setPaymentReference(reference);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error('Package creation error:', error);
