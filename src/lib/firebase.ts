@@ -68,8 +68,10 @@ export interface Payment {
   amount: number;
   paymentMethod: 'bank_transfer' | 'card' | 'other';
   paymentReference: string;
-  status: 'processing' | 'received';
+  status: 'processing' | 'received' | 'declined';
   createdAt: Date | any;
   confirmedAt?: Date | any;
   confirmedBy?: string;
+  declinedAt?: Date | any;
+  declinedBy?: string;
 }

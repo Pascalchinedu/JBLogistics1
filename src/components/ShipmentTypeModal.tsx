@@ -30,7 +30,7 @@ const PackageTypeModal: React.FC<PackageTypeModalProps> = ({ isOpen, onClose }) 
       />
 
       <div className="fixed inset-x-0 bottom-0 z-50 animate-slide-up">
-        <div className="bg-white rounded-t-3xl shadow-2xl max-w-2xl mx-auto max-h-[75vh] flex flex-col">
+        <div className="bg-white rounded-t-3xl shadow-2xl max-w-2xl md:max-w-lg mx-auto max-h-[75vh] flex flex-col">
           <div className="relative flex-shrink-0 p-4 md:p-6 pb-3 md:pb-4 border-b border-gray-100">
             <button
               onClick={onClose}

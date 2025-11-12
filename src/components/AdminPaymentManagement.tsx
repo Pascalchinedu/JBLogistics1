@@ -7,7 +7,7 @@ const AdminPaymentManagement = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [confirmingPaymentId, setConfirmingPaymentId] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState<'all' | 'processing' | 'received'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'processing' | 'received' | 'declined'>('all');
 
   const loadPayments = async () => {
     try {
@@ -55,6 +55,39 @@ const AdminPaymentManagement = () => {
     } catch (error) {
       console.error('Error confirming payment:', error);
       alert('Failed to confirm payment. Please try again.');
+    } finally {
+      setConfirmingPaymentId(null);
+    }
+  };
+
+  const handleDeclinePayment = async (paymentId: string) => {
+    const confirmDecline = window.confirm('Are you sure you want to decline this payment? This action cannot be undone.');
+    
+    if (!confirmDecline) return;
+    
+    try {
+      setConfirmingPaymentId(paymentId);
+      const paymentRef = doc(db, 'payments', paymentId);
+      
+      // Update payment status to declined
+      await updateDoc(paymentRef, {
+        status: 'declined',
+        declinedAt: Timestamp.now(),
+        declinedBy: 'admin'
+      });
+      
+      // Update local state
+      setPayments(payments.map(payment => 
+        payment.id === paymentId 
+          ? { ...payment, status: 'declined' as const, declinedAt: Timestamp.now() }
+          : payment
+      ));
+      
+      // Show success notification
+      alert('Payment declined successfully.');
+    } catch (error) {
+      console.error('Error declining payment:', error);
+      alert('Failed to decline payment. Please try again.');
     } finally {
       setConfirmingPaymentId(null);
     }
@@ -144,6 +177,16 @@ const AdminPaymentManagement = () => {
         >
           Received ({payments.filter(p => p.status === 'received').length})
         </button>
+        <button
+          onClick={() => setStatusFilter('declined')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            statusFilter === 'declined'
+              ? 'bg-yellow-400 text-black'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          Declined ({payments.filter(p => p.status === 'declined').length})
+        </button>
       </div>
 
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -170,16 +213,10 @@ const AdminPaymentManagement = () => {
                     Amount
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Method
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Date
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Status
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Action
                   </th>
                 </tr>
               </thead>
@@ -208,45 +245,54 @@ const AdminPaymentManagement = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-600 capitalize">
-                        {payment.paymentMethod.replace('_', ' ')}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-600">
                         {formatDate(payment.createdAt)}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {payment.status === 'processing' ? (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
-                          <Clock className="h-3 w-3 mr-1" />
-                          Processing
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                          <CheckCircle className="h-3 w-3 mr-1" />
-                          Received
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {payment.status === 'processing' && (
-                        <button
-                          onClick={() => handleConfirmPayment(payment.id)}
-                          disabled={confirmingPaymentId === payment.id}
-                          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {confirmingPaymentId === payment.id ? (
-                            <span className="flex items-center">
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                              Confirming...
+                      <div className="flex items-center space-x-2">
+                        {payment.status === 'processing' ? (
+                          <>
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
+                              <Clock className="h-3 w-3 mr-1" />
+                              Processing
                             </span>
-                          ) : (
-                            'Confirm Payment'
-                          )}
-                        </button>
-                      )}
+                            <button
+                              onClick={() => handleConfirmPayment(payment.id)}
+                              disabled={confirmingPaymentId === payment.id}
+                              className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {confirmingPaymentId === payment.id ? (
+                                <span className="flex items-center">
+                                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
+                                  Confirming...
+                                </span>
+                              ) : (
+                                'Confirm'
+                              )}
+                            </button>
+                            <button
+                              onClick={() => handleDeclinePayment(payment.id)}
+                              disabled={confirmingPaymentId === payment.id}
+                              className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-md text-xs font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              Decline
+                            </button>
+                          </>
+                        ) : payment.status === 'received' ? (
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            Received
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                            <svg className="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Declined
+                          </span>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
