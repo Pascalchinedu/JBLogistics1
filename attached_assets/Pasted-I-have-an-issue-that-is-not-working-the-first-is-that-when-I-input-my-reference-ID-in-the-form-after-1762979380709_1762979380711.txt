@@ -1,0 +1,35 @@
+I have an issue that is not working the first is that when I input my reference ID in the form after making payment it didn't send nothing created this is the form that usually has all the details I don't know if you get what I mean
+
+If you check well nothing works after I input the reference ID this is the the webhook that is supposed to send and also the information that is supposed to send to the admin page
+
+I want you to check this and also the scroll animation across all section in the home page isn't working and this is the 
+I need to add scroll animations to my logistics app built in Replit. Please implement the following animations that trigger when elements come into view while scrolling:
+
+## 1. FAQ Section (Homepage)
+- Implement stagger animations where each FAQ item fades up and appears one by one with a slight delay between each item
+- The animation should be smooth and professional
+
+## 2. Cards (Throughout the entire site)
+- Add fade-up animations for cards (they should start invisible from below and fade up into position)
+- Add slide-in animations from left and right sides for alternating cards or specific sections
+- Include scale/zoom effects where cards start slightly smaller and scale to full size
+
+## 3. Requirements
+- Animations should only trigger once when the element first comes into view (not every time I scroll past)
+- Smooth, professional animations with appropriate timing (not too fast or slow)
+- Should work smoothly across different screen sizes
+- Performance optimized - shouldn't slow down the page
+
+## 4. Implementation Preferences
+- Use the Intersection Observer API for detecting when elements are in view
+- Implement with CSS transitions/animations for smooth performance
+- Add appropriate CSS classes that can be reused across different components
+- Make it easy to apply these animations to new elements in the future
+
+## 5. Please Provide
+- The CSS for all animation types
+- The JavaScript/React code for the Intersection Observer logic
+- How to apply these animations to my existing FAQ and card components
+- Any utility classes I can reuse for other elements
+
+Do the reference form first before moving to the animations and make sure everything you do is responsive on mobile please that's the most used device
