@@ -1,0 +1,74 @@
+# 🔧 Mobile UI Alignment & Sizing Fixes
+
+Please fix the following mobile view issues (**Mobile only - do not change desktop**):
+
+---
+
+## 1. Package Type Selection Modal (Homepage - "Send Package")
+**Issue:** Modal not aligned properly, white space visible outside modal edges
+
+**Fix:**
+* Ensure modal is properly centered and fills appropriate width
+* Remove white space/gaps on sides
+* Modal should fit cleanly within viewport with proper padding
+* Keep rounded corners and backdrop
+
+---
+
+## 2. Admin Dashboard - Payment Management Section
+**Issues:** 
+- Not aligned properly on mobile
+- Filter tabs (All, Processing, Received, Declined) show numbers in parentheses - **remove these numbers**
+- Content should be **horizontally scrollable** if tabs overflow
+
+**Fix:**
+* Fix alignment issues - ensure proper padding and width
+* **Remove count numbers** from filter tabs: Change "All (2)" to just "All", "Processing (0)" to "Processing", etc.
+* Make filter tabs horizontally scrollable (swipe left/right) if they don't fit on screen
+* Keep yellow active state styling
+
+---
+
+## 3. Bank Transfer Details Modal
+**Issue:** Modal fills entire mobile screen - too large
+
+**Fix:**
+* **Reduce modal height** - should NOT fill full screen
+* Modal should be compact and only show:
+  - Bank account details box (yellow background)
+  - Payment reference input field
+  - Important note box (blue)
+  - Cancel and Submit buttons
+* Add appropriate padding/margins so content breathes
+* Keep modal centered with backdrop behind it
+* Should feel like a focused card, not full-page takeover
+
+---
+
+## 4. Package Created Successfully Page
+**Issue:** Fills entire mobile screen - too large
+
+**Fix:**
+* **Reduce content height** - should NOT fill full screen
+* Make layout more compact:
+  - Success icon (green checkmark)
+  - "Package Created Successfully!" heading
+  - Tracking number (with copy button)
+  - Package Summary box (yellow background)
+  - "Create Another" and "Back to Dashboard" buttons
+* Add proper spacing but keep everything contained
+* Content should fit comfortably with white space around it
+* Should not feel cramped or stretched to fill screen
+
+---
+
+## General Requirements
+* All fixes are **MOBILE ONLY** (< 768px breakpoint)
+* Desktop views should remain unchanged
+* Maintain existing color schemes and branding
+* Ensure proper touch targets for mobile interaction
+* Test on various mobile screen sizes (small to large phones)
+
+---
+
+**Goal:** Clean, properly sized mobile modals/pages that don't fill entire screen unnecessarily and are properly aligned without white space gaps.
