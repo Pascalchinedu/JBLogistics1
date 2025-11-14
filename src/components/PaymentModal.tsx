@@ -55,7 +55,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   if (showBankDetails) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-lg max-w-md w-full p-6 relative max-h-[90vh] overflow-y-auto">
+        <div className="bg-white rounded-lg max-w-md w-full p-4 md:p-6 relative max-h-[85vh] md:max-h-[90vh] overflow-y-auto my-auto">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
@@ -63,12 +63,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             <X className="h-6 w-6" />
           </button>
 
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Bank Transfer Details</h2>
-            <p className="text-gray-600">Transfer ₦{amount.toLocaleString()} to the account below</p>
+          <div className="mb-4 md:mb-6">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-1 md:mb-2">Bank Transfer Details</h2>
+            <p className="text-sm md:text-base text-gray-600">Transfer ₦{amount.toLocaleString()} to the account below</p>
           </div>
 
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6">
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 md:p-6 mb-4 md:mb-6">
             <div className="space-y-4">
               <div>
                 <p className="text-sm text-gray-600 mb-1">Bank Name</p>
@@ -89,7 +89,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             </div>
           </div>
 
-          <div className="mb-6">
+          <div className="mb-4 md:mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Payment Reference / Transaction ID <span className="text-red-500">*</span>
             </label>
@@ -105,7 +105,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             </p>
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 md:p-4 mb-4 md:mb-6">
             <div className="flex items-start space-x-2">
               <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div className="text-sm text-blue-800">

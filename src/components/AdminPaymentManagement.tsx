@@ -145,48 +145,56 @@ const AdminPaymentManagement = () => {
         </button>
       </div>
 
-      <div className="flex items-center space-x-3 bg-white p-4 rounded-lg shadow">
-        <span className="text-sm font-medium text-gray-700">Filter by status:</span>
-        <button
-          onClick={() => setStatusFilter('all')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            statusFilter === 'all'
-              ? 'bg-yellow-400 text-black'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-        >
-          All ({payments.length})
-        </button>
-        <button
-          onClick={() => setStatusFilter('processing')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            statusFilter === 'processing'
-              ? 'bg-yellow-400 text-black'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-        >
-          Processing ({payments.filter(p => p.status === 'processing').length})
-        </button>
-        <button
-          onClick={() => setStatusFilter('received')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            statusFilter === 'received'
-              ? 'bg-yellow-400 text-black'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-        >
-          Received ({payments.filter(p => p.status === 'received').length})
-        </button>
-        <button
-          onClick={() => setStatusFilter('declined')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            statusFilter === 'declined'
-              ? 'bg-yellow-400 text-black'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-        >
-          Declined ({payments.filter(p => p.status === 'declined').length})
-        </button>
+      <div className="bg-white p-4 rounded-lg shadow">
+        <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-3">
+          <span className="text-sm font-medium text-gray-700 flex-shrink-0">Filter by status:</span>
+          <div className="flex items-center space-x-3 overflow-x-auto pb-2 md:pb-0">
+            <button
+              onClick={() => setStatusFilter('all')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                statusFilter === 'all'
+                  ? 'bg-yellow-400 text-black'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <span className="md:hidden">All</span>
+              <span className="hidden md:inline">All ({payments.length})</span>
+            </button>
+            <button
+              onClick={() => setStatusFilter('processing')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                statusFilter === 'processing'
+                  ? 'bg-yellow-400 text-black'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <span className="md:hidden">Processing</span>
+              <span className="hidden md:inline">Processing ({payments.filter(p => p.status === 'processing').length})</span>
+            </button>
+            <button
+              onClick={() => setStatusFilter('received')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                statusFilter === 'received'
+                  ? 'bg-yellow-400 text-black'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <span className="md:hidden">Received</span>
+              <span className="hidden md:inline">Received ({payments.filter(p => p.status === 'received').length})</span>
+            </button>
+            <button
+              onClick={() => setStatusFilter('declined')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                statusFilter === 'declined'
+                  ? 'bg-yellow-400 text-black'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <span className="md:hidden">Declined</span>
+              <span className="hidden md:inline">Declined ({payments.filter(p => p.status === 'declined').length})</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">

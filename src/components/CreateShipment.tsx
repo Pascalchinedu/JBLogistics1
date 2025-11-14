@@ -334,24 +334,24 @@ const CreateShipment = () => {
     return (
       <div className="min-h-screen bg-white">
         <Header />
-        <div className="container-responsive py-16 lg:py-24">
+        <div className="container-responsive py-8 md:py-16 lg:py-24">
           <div className="max-w-2xl mx-auto text-center">
-            <div className="bg-green-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="h-10 w-10 text-green-500" />
+            <div className="bg-green-50 rounded-full w-16 h-16 md:w-20 md:h-20 flex items-center justify-center mx-auto mb-4 md:mb-6">
+              <CheckCircle className="h-8 w-8 md:h-10 md:w-10 text-green-500" />
             </div>
 
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-merienda-mobile md:font-merienda">
+            <h1 className="text-2xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4 font-merienda-mobile md:font-merienda">
               Package Created Successfully!
             </h1>
 
-            <p className="text-gray-600 mb-8">
+            <p className="text-sm md:text-base text-gray-600 mb-6 md:mb-8">
               Your package has been registered. Use the tracking number below to monitor your delivery.
             </p>
 
-            <div className="bg-gray-50 rounded-lg p-8 mb-8">
-              <p className="text-sm text-gray-600 mb-2">Tracking Number</p>
+            <div className="bg-gray-50 rounded-lg p-4 md:p-8 mb-6 md:mb-8">
+              <p className="text-xs md:text-sm text-gray-600 mb-2">Tracking Number</p>
               <div className="flex items-center justify-center space-x-2">
-                <p className="text-2xl md:text-3xl font-bold text-yellow-600 font-mono break-all">
+                <p className="text-lg md:text-3xl font-bold text-yellow-600 font-mono break-all">
                   {trackingNumber}
                 </p>
                 <button
@@ -360,16 +360,16 @@ const CreateShipment = () => {
                   title="Copy tracking number"
                 >
                   {copied ? (
-                    <CheckCircle className="h-6 w-6 text-green-500" />
+                    <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-green-500" />
                   ) : (
-                    <Copy className="h-6 w-6 text-gray-600" />
+                    <Copy className="h-5 w-5 md:h-6 md:w-6 text-gray-600" />
                   )}
                 </button>
               </div>
             </div>
 
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-8 text-left">
-              <h3 className="font-semibold text-gray-900 mb-4">Package Summary</h3>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 md:p-6 mb-6 md:mb-8 text-left">
+              <h3 className="font-semibold text-gray-900 mb-3 md:mb-4 text-sm md:text-base">Package Summary</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Package:</span>
@@ -382,16 +382,16 @@ const CreateShipment = () => {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
               <button
                 onClick={handleCreateAnother}
-                className="flex-1 sm:flex-initial bg-yellow-400 hover:bg-yellow-500 text-black px-8 py-3 rounded-full font-semibold transition-all"
+                className="flex-1 sm:flex-initial bg-yellow-400 hover:bg-yellow-500 text-black px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold transition-all text-sm md:text-base"
               >
                 Create Another
               </button>
               <button
                 onClick={() => navigate('/dashboard')}
-                className="flex-1 sm:flex-initial border-2 border-amber-800 text-amber-800 hover:bg-amber-800 hover:text-white px-8 py-3 rounded-full font-semibold transition-all"
+                className="flex-1 sm:flex-initial border-2 border-amber-800 text-amber-800 hover:bg-amber-800 hover:text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold transition-all text-sm md:text-base"
               >
                 Back to Dashboard
               </button>
