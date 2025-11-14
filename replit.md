@@ -74,6 +74,17 @@ src/
 
 ## Recent Changes (Nov 14, 2025)
 
+### Fixed Tracking Page Issue
+- **Root Cause:** The tracking page wasn't showing shipment status because Firestore indexes were missing for `trackingNumber` and `waybillNumber` fields
+- **Symptoms:** Browser console showed "Firestore index not available, using simple query" with `failed-precondition` error
+- **Fix Applied:** Created `firestore.indexes.json` with required indexes:
+  - Index on `shipments.trackingNumber` for normal delivery tracking
+  - Index on `shipments.waybillNumber` for waybill tracking
+  - Index on `shipments.userId` for user-specific queries
+- **Action Required:** Deploy indexes to Firebase using instructions in `DEPLOY_FIRESTORE_INDEXES.md`
+- **Files Created:** `firestore.indexes.json`, `DEPLOY_FIRESTORE_INDEXES.md`
+- **Expected Result:** After deploying indexes, tracking queries will work and display shipment status correctly
+
 ### Mobile UI Optimization
 - **Improved mobile responsiveness across key components (Mobile-only changes - desktop unchanged):**
   - **Package Type Selection Modal:**
