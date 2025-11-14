@@ -72,7 +72,36 @@ src/
 3. Express Delivery - Ultra-fast 1-2 hour delivery service
 4. Special Services - COD and emergency delivery options
 
-## Recent Changes (Nov 12, 2025)
+## Recent Changes (Nov 14, 2025)
+
+### Mobile UI Optimization
+- **Improved mobile responsiveness across key components (Mobile-only changes - desktop unchanged):**
+  - **Package Type Selection Modal:**
+    - Fixed alignment issues - modal now properly fills viewport width on mobile
+    - Eliminated white space gaps on mobile screens
+    - File modified: `ShipmentTypeModal.tsx`
+  
+  - **Admin Payment Management:**
+    - Removed count numbers from filter tabs on mobile (e.g., "All" instead of "All (2)")
+    - Added horizontal scroll for filter tabs on mobile when they overflow
+    - Desktop view maintains count numbers and original layout
+    - File modified: `AdminPaymentManagement.tsx`
+  
+  - **Bank Transfer Details Modal:**
+    - Reduced modal height on mobile to prevent full-screen takeover
+    - Reduced padding and spacing for more compact appearance on mobile
+    - Modal now feels like a focused card rather than full-page experience
+    - Desktop spacing and layout preserved
+    - File modified: `PaymentModal.tsx`
+  
+  - **Package Created Successfully Pages:**
+    - Made success pages more compact on mobile with reduced spacing
+    - Smaller typography and icons on mobile (text-2xl vs md:text-4xl for headings)
+    - Reduced padding throughout for better mobile fit
+    - Desktop maintains original large typography and generous spacing
+    - Files modified: `CreateShipment.tsx`, `CreateWaybillShipment.tsx`
+
+## Previous Changes (Nov 12, 2025)
 
 ### UI/UX Improvements to Admin Panel and Package Selection Modal
 - **Package Type Modal Size Adjustment:**
