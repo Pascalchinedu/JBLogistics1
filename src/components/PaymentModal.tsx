@@ -22,13 +22,13 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   isProcessing = false
 }) => {
   const [paymentMethod, setPaymentMethod] = useState<'pickup_transfer' | 'dropoff_cod' | ''>('pickup_transfer');
-  const [transactionReference, setTransactionReference] = useState('');
+  const [senderName, setSenderName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setPaymentMethod('pickup_transfer');
-      setTransactionReference('');
+      setSenderName('');
       setIsSubmitting(false);
     }
   }, [isOpen]);
@@ -39,8 +39,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       return;
     }
 
-    if (paymentMethod === 'pickup_transfer' && !transactionReference.trim()) {
-      alert('Please enter your transaction reference');
+    if (paymentMethod === 'pickup_transfer' && !senderName.trim()) {
+      alert('Please enter the sender\'s name');
       return;
     }
     
@@ -48,7 +48,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     try {
       await onPaymentSuccess({
         method: paymentMethod,
-        reference: paymentMethod === 'pickup_transfer' ? transactionReference : undefined
+        reference: paymentMethod === 'pickup_transfer' ? senderName : undefined
       });
     } catch (error) {
       console.error('Payment submission error:', error);
@@ -173,18 +173,18 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
             <div className="mb-4 md:mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Payment Reference / Transaction ID <span className="text-red-500">*</span>
+                Sender's Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                value={transactionReference}
-                onChange={(e) => setTransactionReference(e.target.value)}
-                placeholder="Enter your payment reference or transaction ID"
+                value={senderName}
+                onChange={(e) => setSenderName(e.target.value)}
+                placeholder="Enter sender's full name"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
                 disabled={isProcessing}
               />
               <p className="text-xs text-gray-500 mt-1">
-                Enter the reference/transaction ID from your bank transfer confirmation
+                Enter the full name of the person sending the money
               </p>
             </div>
 
