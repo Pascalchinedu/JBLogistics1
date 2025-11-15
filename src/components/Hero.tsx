@@ -65,7 +65,11 @@ const Hero = () => {
       setShowLoginModal(true);
       return;
     }
-    setShowShipmentModal(true);
+    setIsNavigating(true);
+    setTimeout(() => {
+      navigate('/dashboard');
+      setIsNavigating(false);
+    }, 150);
   };
 
   const handleTrackPackage = () => {
