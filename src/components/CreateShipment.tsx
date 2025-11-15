@@ -60,6 +60,7 @@ const CreateShipment = () => {
   const [copied, setCopied] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentReference, setPaymentReference] = useState('');
+  const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
 
   const validatePhone = (phone: string): boolean => {
     const phoneRegex = /^\+234\d{10}$/;
@@ -155,7 +156,7 @@ const CreateShipment = () => {
   };
 
   const handlePaymentSuccess = async (reference: string) => {
-    setShowPaymentModal(false);
+    setIsPaymentProcessing(true);
     setIsSubmitting(true);
     setSubmitError('');
 
@@ -291,6 +292,7 @@ const CreateShipment = () => {
       setTrackingNumber(generatedTrackingNumber);
       setPaymentReference(reference);
       localStorage.removeItem('shipmentFormBackup');
+      setShowPaymentModal(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error('Package creation error:', error);
@@ -298,6 +300,7 @@ const CreateShipment = () => {
       setSubmitError(`Unable to create package: ${errorMessage}. Please try again or contact support.`);
     } finally {
       setIsSubmitting(false);
+      setIsPaymentProcessing(false);
     }
   };
 
@@ -420,6 +423,7 @@ const CreateShipment = () => {
           description: formData.packageDescription || 'Package',
           serviceType: formData.serviceType || 'Service'
         }}
+        isProcessing={isPaymentProcessing}
       />
 
       <div className="bg-gradient-to-r from-amber-900 to-amber-700 text-white py-12">

@@ -11,13 +11,15 @@ interface PaymentModalProps {
     description: string;
     serviceType: string;
   };
+  isProcessing?: boolean;
 }
 
 const PaymentModal: React.FC<PaymentModalProps> = ({
   isOpen,
   onClose,
   amount,
-  onPaymentSuccess
+  onPaymentSuccess,
+  isProcessing = false
 }) => {
   const [showBankDetails, setShowBankDetails] = useState(false);
   const [transactionReference, setTransactionReference] = useState('');
@@ -118,17 +120,17 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           <div className="flex space-x-3">
             <button
               onClick={onClose}
-              disabled={isSubmitting}
+              disabled={isSubmitting || isProcessing}
               className="flex-1 border-2 border-gray-300 text-gray-700 hover:bg-gray-100 px-4 py-3 rounded-full font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               onClick={handleManualTransferSubmit}
-              disabled={isSubmitting}
+              disabled={isSubmitting || isProcessing}
               className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-3 rounded-full font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? (
+              {isSubmitting || isProcessing ? (
                 <div className="flex items-center justify-center">
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black mr-2"></div>
                   Processing...

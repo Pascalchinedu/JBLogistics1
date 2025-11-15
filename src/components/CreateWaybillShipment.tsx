@@ -61,6 +61,7 @@ const CreateWaybillShipment = () => {
   const [copied, setCopied] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentReference, setPaymentReference] = useState('');
+  const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
 
   const validatePhone = (phone: string): boolean => {
     const phoneRegex = /^\+234\d{10}$/;
@@ -144,7 +145,7 @@ const CreateWaybillShipment = () => {
   };
 
   const handlePaymentSuccess = async (reference: string) => {
-    setShowPaymentModal(false);
+    setIsPaymentProcessing(true);
     setIsSubmitting(true);
     setSubmitError('');
 
@@ -284,6 +285,7 @@ const CreateWaybillShipment = () => {
 
       setWaybillNumber(generatedWaybillNumber);
       setPaymentReference(reference);
+      setShowPaymentModal(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error('Package creation error:', error);
@@ -291,6 +293,7 @@ const CreateWaybillShipment = () => {
       setSubmitError(`Unable to create package: ${errorMessage}. Please try again or contact support.`);
     } finally {
       setIsSubmitting(false);
+      setIsPaymentProcessing(false);
     }
   };
 
@@ -414,6 +417,7 @@ const CreateWaybillShipment = () => {
           description: formData.packageDescription || 'Package',
           serviceType: 'Waybill Transfer'
         }}
+        isProcessing={isPaymentProcessing}
       />
 
       <div className="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-12">
