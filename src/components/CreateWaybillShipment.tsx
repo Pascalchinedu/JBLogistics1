@@ -20,7 +20,7 @@ const PORT_HARCOURT_AREAS = [
 
 interface FormData {
   pickupParkName: string;
-  orderNumber: string;
+  senderName: string;
   pickupRecipientName: string;
   pickupRecipientIdNumber: string;
   pickupRecipientPhone: string;
@@ -42,7 +42,7 @@ const CreateWaybillShipment = () => {
 
   const [formData, setFormData] = useState<FormData>({
     pickupParkName: '',
-    orderNumber: '',
+    senderName: '',
     pickupRecipientName: '',
     pickupRecipientIdNumber: '',
     pickupRecipientPhone: '',
@@ -78,7 +78,7 @@ const CreateWaybillShipment = () => {
     const newErrors: FormErrors = {};
 
     if (!formData.pickupParkName.trim()) newErrors.pickupParkName = 'Pickup location is required';
-    if (!formData.orderNumber.trim()) newErrors.orderNumber = 'Order number is required';
+    if (!formData.senderName.trim()) newErrors.senderName = 'Sender name is required';
     if (!formData.pickupRecipientName.trim()) newErrors.pickupRecipientName = 'Recipient name is required';
     if (!formData.pickupRecipientIdNumber.trim()) newErrors.pickupRecipientIdNumber = 'Recipient ID number is required';
     if (!formData.pickupRecipientPhone) {
@@ -160,7 +160,7 @@ const CreateWaybillShipment = () => {
         userEmail: user?.email || formData.deliveryRecipientEmail,
         userName: formData.deliveryRecipientName,
         pickupParkName: formData.pickupParkName,
-        orderNumber: formData.orderNumber,
+        senderName: formData.senderName,
         pickupRecipientName: formData.pickupRecipientName,
         pickupRecipientIdNumber: formData.pickupRecipientIdNumber,
         pickupRecipientPhone: formData.pickupRecipientPhone,
@@ -204,7 +204,7 @@ const CreateWaybillShipment = () => {
         trackingNumber: generatedWaybillNumber,
         shipmentType: 'waybill',
         pickupParkName: formData.pickupParkName,
-        orderNumber: formData.orderNumber,
+        senderName: formData.senderName,
         pickupRecipientName: formData.pickupRecipientName,
         pickupRecipientIdNumber: formData.pickupRecipientIdNumber,
         pickupRecipientPhone: formData.pickupRecipientPhone,
@@ -252,7 +252,7 @@ const CreateWaybillShipment = () => {
         firestoreId: docRef.id,
         shipmentType: 'waybill',
         pickupParkName: formData.pickupParkName,
-        orderNumber: formData.orderNumber,
+        senderName: formData.senderName,
         pickupRecipientName: formData.pickupRecipientName,
         pickupRecipientIdNumber: formData.pickupRecipientIdNumber,
         pickupRecipientPhone: formData.pickupRecipientPhone,
@@ -315,7 +315,7 @@ const CreateWaybillShipment = () => {
     setWaybillNumber('');
     setFormData({
       pickupParkName: '',
-      orderNumber: '',
+      senderName: '',
       pickupRecipientName: '',
       pickupRecipientIdNumber: '',
       pickupRecipientPhone: '',
@@ -484,20 +484,20 @@ const CreateWaybillShipment = () => {
 
               <div className="md:col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Order Number <span className="text-red-500">*</span>
+                  Sender's Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
-                  name="orderNumber"
-                  value={formData.orderNumber}
+                  name="senderName"
+                  value={formData.senderName}
                   onChange={handleInputChange}
-                  placeholder="Enter order/tracking number"
+                  placeholder="Enter sender's full name"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.orderNumber ? 'border-red-500' : 'border-gray-300'
+                    errors.senderName ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
-                {errors.orderNumber && (
-                  <p className="text-red-500 text-sm mt-1">{errors.orderNumber}</p>
+                {errors.senderName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.senderName}</p>
                 )}
               </div>
 
