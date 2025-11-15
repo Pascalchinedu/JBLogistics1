@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, query, getDocs, doc, updateDoc, orderBy, Timestamp } from 'firebase/firestore';
+import { collection, query, getDocs, doc, updateDoc, orderBy, Timestamp, where } from 'firebase/firestore';
 import { db, Payment } from '../lib/firebase';
 import { CreditCard, CheckCircle, Clock, RefreshCw } from 'lucide-react';
 
@@ -7,7 +7,7 @@ const AdminPaymentManagement = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [confirmingPaymentId, setConfirmingPaymentId] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState<'all' | 'processing' | 'received' | 'declined'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'transfer_pending' | 'transfer_confirmed' | 'cod' | 'declined'>('all');
 
   const loadPayments = async () => {
     try {
@@ -36,6 +36,13 @@ const AdminPaymentManagement = () => {
   const handleConfirmPayment = async (paymentId: string) => {
     try {
       setConfirmingPaymentId(paymentId);
+      const payment = payments.find(p => p.id === paymentId);
+      
+      if (!payment) {
+        throw new Error('Payment not found');
+      }
+      
+      // Update payment status
       const paymentRef = doc(db, 'payments', paymentId);
       await updateDoc(paymentRef, {
         status: 'received',
@@ -43,11 +50,27 @@ const AdminPaymentManagement = () => {
         confirmedBy: 'admin'
       });
       
+      // Also update the corresponding shipment's paymentStatus
+      if (payment.trackingId) {
+        const shipmentsRef = collection(db, 'shipments');
+        const shipmentQuery = query(shipmentsRef, where('trackingNumber', '==', payment.trackingId));
+        const shipmentSnapshot = await getDocs(shipmentQuery);
+        
+        if (!shipmentSnapshot.empty) {
+          const shipmentDoc = shipmentSnapshot.docs[0];
+          await updateDoc(doc(db, 'shipments', shipmentDoc.id), {
+            paymentStatus: 'paid',
+            updatedAt: Timestamp.now()
+          });
+          console.log('Shipment paymentStatus updated to "paid" for tracking:', payment.trackingId);
+        }
+      }
+      
       // Update local state
-      setPayments(payments.map(payment => 
-        payment.id === paymentId 
-          ? { ...payment, status: 'received' as const, confirmedAt: Timestamp.now() }
-          : payment
+      setPayments(payments.map(p => 
+        p.id === paymentId 
+          ? { ...p, status: 'received' as const, confirmedAt: Timestamp.now() }
+          : p
       ));
       
       // Show success notification
@@ -116,6 +139,51 @@ const AdminPaymentManagement = () => {
     }).format(amount);
   };
 
+  const getPaymentMethodLabel = (method: string) => {
+    switch (method) {
+      case 'pickup_transfer':
+        return 'Bank Transfer';
+      case 'dropoff_cod':
+        return 'Cash on Delivery';
+      case 'bank_transfer':
+        return 'Bank Transfer';
+      default:
+        return method || 'N/A';
+    }
+  };
+
+  const filterPayments = (payments: Payment[]) => {
+    if (statusFilter === 'all') return payments;
+    
+    if (statusFilter === 'transfer_pending') {
+      return payments.filter(p => 
+        (p.paymentMethod === 'pickup_transfer' || p.paymentMethod === 'bank_transfer' || !p.paymentMethod) && 
+        (p.status === 'processing' || p.status === 'pending')
+      );
+    }
+    
+    if (statusFilter === 'transfer_confirmed') {
+      return payments.filter(p => 
+        (p.paymentMethod === 'pickup_transfer' || p.paymentMethod === 'bank_transfer' || !p.paymentMethod) && 
+        (p.status === 'received' || p.status === 'paid')
+      );
+    }
+    
+    if (statusFilter === 'cod') {
+      return payments.filter(p => 
+        p.paymentMethod === 'dropoff_cod' || 
+        p.paymentMethod === 'cod' || 
+        p.status === 'cod_pending'
+      );
+    }
+    
+    if (statusFilter === 'declined') {
+      return payments.filter(p => p.status === 'declined');
+    }
+    
+    return payments;
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -147,50 +215,60 @@ const AdminPaymentManagement = () => {
 
       <div className="bg-white p-4 rounded-lg shadow">
         <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-3">
-          <span className="text-sm font-medium text-gray-700 flex-shrink-0">Filter by status:</span>
-          <div className="flex items-center space-x-3 overflow-x-auto pb-2 md:pb-0">
+          <span className="text-sm font-medium text-gray-700 flex-shrink-0">Filter by payment:</span>
+          <div className="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0">
             <button
               onClick={() => setStatusFilter('all')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 statusFilter === 'all'
                   ? 'bg-yellow-400 text-black'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              <span className="md:hidden">All</span>
-              <span className="hidden md:inline">All ({payments.length})</span>
+              All ({payments.length})
             </button>
             <button
-              onClick={() => setStatusFilter('processing')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                statusFilter === 'processing'
+              onClick={() => setStatusFilter('transfer_pending')}
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                statusFilter === 'transfer_pending'
                   ? 'bg-yellow-400 text-black'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              <span className="md:hidden">Processing</span>
-              <span className="hidden md:inline">Processing ({payments.filter(p => p.status === 'processing').length})</span>
+              <span className="md:hidden">⏳ Pending</span>
+              <span className="hidden md:inline">Transfer - Pending ({filterPayments(payments).filter(p => statusFilter !== 'transfer_pending').filter(p => (p.paymentMethod === 'pickup_transfer' || p.paymentMethod === 'bank_transfer' || !p.paymentMethod) && (p.status === 'processing' || p.status === 'pending')).length})</span>
             </button>
             <button
-              onClick={() => setStatusFilter('received')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                statusFilter === 'received'
+              onClick={() => setStatusFilter('transfer_confirmed')}
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                statusFilter === 'transfer_confirmed'
                   ? 'bg-yellow-400 text-black'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              <span className="md:hidden">Received</span>
-              <span className="hidden md:inline">Received ({payments.filter(p => p.status === 'received').length})</span>
+              <span className="md:hidden">✓ Confirmed</span>
+              <span className="hidden md:inline">Transfer - Confirmed ({payments.filter(p => (p.paymentMethod === 'pickup_transfer' || p.paymentMethod === 'bank_transfer' || !p.paymentMethod) && (p.status === 'received' || p.status === 'paid')).length})</span>
+            </button>
+            <button
+              onClick={() => setStatusFilter('cod')}
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                statusFilter === 'cod'
+                  ? 'bg-yellow-400 text-black'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <span className="md:hidden">💵 COD</span>
+              <span className="hidden md:inline">Cash on Delivery ({payments.filter(p => p.paymentMethod === 'dropoff_cod' || p.paymentMethod === 'cod' || p.status === 'cod_pending').length})</span>
             </button>
             <button
               onClick={() => setStatusFilter('declined')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 statusFilter === 'declined'
                   ? 'bg-yellow-400 text-black'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              <span className="md:hidden">Declined</span>
+              <span className="md:hidden">✕ Declined</span>
               <span className="hidden md:inline">Declined ({payments.filter(p => p.status === 'declined').length})</span>
             </button>
           </div>
@@ -198,7 +276,7 @@ const AdminPaymentManagement = () => {
       </div>
 
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-        {payments.filter(p => statusFilter === 'all' || p.status === statusFilter).length === 0 ? (
+        {filterPayments(payments).length === 0 ? (
           <div className="text-center py-12">
             <CreditCard className="h-16 w-16 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-500">No payments found</p>
@@ -218,6 +296,9 @@ const AdminPaymentManagement = () => {
                     Customer
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Payment Method
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Amount
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -229,7 +310,7 @@ const AdminPaymentManagement = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {payments.filter(p => statusFilter === 'all' || p.status === statusFilter).map((payment) => (
+                {filterPayments(payments).map((payment) => (
                   <tr key={payment.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">
@@ -246,6 +327,16 @@ const AdminPaymentManagement = () => {
                         {payment.customerName}
                       </div>
                       <div className="text-xs text-gray-500">{payment.customerEmail}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {getPaymentMethodLabel(payment.paymentMethod)}
+                      </div>
+                      {(payment.paymentMethod === 'dropoff_cod' || payment.paymentMethod === 'cod' || payment.status === 'cod_pending') && (
+                        <div className="text-xs text-orange-600 font-semibold mt-1">
+                          Collect ₦{payment.amount.toLocaleString()} from receiver
+                        </div>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-semibold text-gray-900">
@@ -318,7 +409,8 @@ const AdminPaymentManagement = () => {
           <div className="ml-3">
             <h3 className="text-sm font-semibold text-blue-900">Payment Management Tips</h3>
             <div className="mt-2 text-sm text-blue-700 space-y-1">
-              <p>• Verify payment reference with customer before confirming</p>
+              <p>• <strong>Bank Transfer:</strong> Verify payment reference with customer before confirming</p>
+              <p>• <strong>Cash on Delivery:</strong> Collect payment from receiver upon package delivery</p>
               <p>• Processing status means payment is awaiting confirmation</p>
               <p>• Once confirmed, payment status updates to "Received" in user's dashboard</p>
             </div>

@@ -66,9 +66,9 @@ export interface Payment {
   customerName: string;
   customerEmail: string;
   amount: number;
-  paymentMethod: 'bank_transfer' | 'card' | 'other';
-  paymentReference: string;
-  status: 'processing' | 'received' | 'declined';
+  paymentMethod: 'bank_transfer' | 'card' | 'other' | 'cod' | 'pickup_transfer' | 'dropoff_cod';
+  paymentReference?: string;
+  status: 'processing' | 'received' | 'declined' | 'pending' | 'paid' | 'cod_pending';
   createdAt: Date | any;
   confirmedAt?: Date | any;
   confirmedBy?: string;

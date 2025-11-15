@@ -144,7 +144,7 @@ const CreateWaybillShipment = () => {
     setShowPaymentModal(true);
   };
 
-  const handlePaymentSuccess = async (reference: string) => {
+  const handlePaymentSuccess = async (paymentData: { method: 'pickup_transfer' | 'dropoff_cod'; reference?: string }) => {
     setIsPaymentProcessing(true);
     setIsSubmitting(true);
     setSubmitError('');
@@ -171,6 +171,8 @@ const CreateWaybillShipment = () => {
         deliveryLandmark: formData.deliveryLandmark,
         packageDescription: formData.packageDescription,
         serviceType: 'Waybill Transfer',
+        paymentMethod: paymentData.method,
+        paymentStatus: paymentData.method === 'pickup_transfer' ? 'paid' : 'cod_pending',
         status: 'processing',
         currentLocation: 'Park pickup pending',
         price: 3000,
@@ -182,19 +184,19 @@ const CreateWaybillShipment = () => {
 
       console.log('Waybill package saved to Firestore with ID:', docRef.id);
 
-      const paymentData = {
+      const paymentRecordData = {
         userId: user?.uid || 'guest',
         trackingId: generatedWaybillNumber,
         customerName: formData.deliveryRecipientName,
         customerEmail: formData.deliveryRecipientEmail,
         amount: 3000,
-        paymentMethod: 'bank_transfer' as const,
-        paymentReference: reference,
-        status: 'processing' as const,
+        paymentMethod: paymentData.method,
+        paymentReference: paymentData.reference || 'COD',
+        status: paymentData.method === 'pickup_transfer' ? 'processing' as const : 'cod_pending' as const,
         createdAt: Timestamp.now()
       };
 
-      await addDoc(collection(db, 'payments'), paymentData);
+      await addDoc(collection(db, 'payments'), paymentRecordData);
       console.log('Payment record created for waybill:', generatedWaybillNumber);
 
       const webhookPayload = {
@@ -213,8 +215,9 @@ const CreateWaybillShipment = () => {
         packageDescription: formData.packageDescription,
         serviceType: 'Waybill Transfer',
         price: 3000,
-        paymentReference: reference,
-        paymentStatus: 'paid',
+        paymentMethod: paymentData.method,
+        paymentReference: paymentData.reference || 'COD',
+        paymentStatus: paymentData.method === 'pickup_transfer' ? 'paid' : 'cod_pending',
         status: 'pending',
         firestoreId: docRef.id,
         createdAt: new Date().toISOString(),
@@ -260,8 +263,9 @@ const CreateWaybillShipment = () => {
         deliveryLandmark: formData.deliveryLandmark,
         serviceType: 'Waybill Transfer',
         price: '3000',
-        paymentReference: reference,
-        paymentStatus: 'paid',
+        paymentMethod: paymentData.method,
+        paymentReference: paymentData.reference || 'COD',
+        paymentStatus: paymentData.method === 'pickup_transfer' ? 'paid' : 'cod_pending',
       });
 
       const getWebhookUrl = `${WEBHOOK_GET_URL}?${getWebhookParams.toString()}`;
@@ -284,7 +288,7 @@ const CreateWaybillShipment = () => {
       }
 
       setWaybillNumber(generatedWaybillNumber);
-      setPaymentReference(reference);
+      setPaymentReference(paymentData.reference || 'COD');
       setShowPaymentModal(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {

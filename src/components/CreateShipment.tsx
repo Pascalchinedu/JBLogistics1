@@ -155,12 +155,13 @@ const CreateShipment = () => {
     setShowPaymentModal(true);
   };
 
-  const handlePaymentSuccess = async (reference: string) => {
+  const handlePaymentSuccess = async (paymentData: { method: 'pickup_transfer' | 'dropoff_cod'; reference?: string }) => {
     setIsPaymentProcessing(true);
     setIsSubmitting(true);
     setSubmitError('');
 
     const generatedTrackingNumber = generateTrackingNumber();
+    const price = formData.serviceType.includes('Local Bike') ? '3000' : '5000';
 
     try {
       const shipmentData = {
@@ -179,6 +180,8 @@ const CreateShipment = () => {
         deliveryLandmark: formData.deliveryLandmark,
         packageDescription: formData.packageDescription,
         serviceType: formData.serviceType,
+        paymentMethod: paymentData.method,
+        paymentStatus: paymentData.method === 'pickup_transfer' ? 'paid' : 'cod_pending',
         status: 'processing',
         currentLocation: 'Pickup pending',
         createdAt: Timestamp.now(),
@@ -188,22 +191,20 @@ const CreateShipment = () => {
       const docRef = await addDoc(collection(db, 'shipments'), shipmentData);
 
       console.log('Package saved to Firestore with ID:', docRef.id);
-
-      const price = formData.serviceType.includes('Local Bike') ? '3000' : '5000';
       
-      const paymentData = {
+      const paymentRecordData = {
         userId: user?.uid || 'guest',
         trackingId: generatedTrackingNumber,
         customerName: formData.senderName,
         customerEmail: formData.senderEmail,
         amount: parseFloat(price),
-        paymentMethod: 'bank_transfer' as const,
-        paymentReference: reference,
-        status: 'processing' as const,
+        paymentMethod: paymentData.method,
+        paymentReference: paymentData.reference || 'COD',
+        status: paymentData.method === 'pickup_transfer' ? 'processing' as const : 'cod_pending' as const,
         createdAt: Timestamp.now()
       };
 
-      await addDoc(collection(db, 'payments'), paymentData);
+      await addDoc(collection(db, 'payments'), paymentRecordData);
       console.log('Payment record created for tracking:', generatedTrackingNumber);
 
       const webhookPayload = {
@@ -219,8 +220,9 @@ const CreateShipment = () => {
         serviceType: formData.serviceType,
         status: 'pending',
         price: price,
-        paymentReference: reference,
-        paymentStatus: 'paid',
+        paymentMethod: paymentData.method,
+        paymentReference: paymentData.reference || 'COD',
+        paymentStatus: paymentData.method === 'pickup_transfer' ? 'paid' : 'cod_pending',
         firestoreId: docRef.id,
         createdAt: new Date().toISOString(),
       };
@@ -264,8 +266,9 @@ const CreateShipment = () => {
         receiverPhone: formData.receiverPhone,
         serviceType: formData.serviceType,
         price: price,
-        paymentReference: reference,
-        paymentStatus: 'paid',
+        paymentMethod: paymentData.method,
+        paymentReference: paymentData.reference || 'COD',
+        paymentStatus: paymentData.method === 'pickup_transfer' ? 'paid' : 'cod_pending',
       });
 
       const getWebhookUrl = `${WEBHOOK_GET_URL}?${getWebhookParams.toString()}`;
@@ -290,7 +293,7 @@ const CreateShipment = () => {
       }
 
       setTrackingNumber(generatedTrackingNumber);
-      setPaymentReference(reference);
+      setPaymentReference(paymentData.reference || 'COD');
       localStorage.removeItem('shipmentFormBackup');
       setShowPaymentModal(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
