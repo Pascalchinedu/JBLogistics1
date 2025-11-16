@@ -134,19 +134,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           </div>
         </div>
 
-        {/* Confirmation Message */}
-        {paymentMethod && (
-          <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-sm text-blue-800">
-              <span className="font-semibold">You selected:</span> {
-                paymentMethod === 'pickup_transfer' 
-                  ? 'Pickup Pays (Transfer Now)' 
-                  : 'Drop-off Pays (Cash on Delivery)'
-              } for <span className="font-bold">₦{amount.toLocaleString()}</span>
-            </p>
-          </div>
-        )}
-
         {/* Bank Transfer Details (Conditional) */}
         {paymentMethod === 'pickup_transfer' && (
           <>

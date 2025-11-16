@@ -715,11 +715,11 @@ const CreateShipment = () => {
           </div>
 
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-row gap-3 md:gap-4 justify-center">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="sm:w-auto w-full bg-yellow-400 hover:bg-yellow-500 text-black px-8 py-3 rounded-full font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] flex items-center justify-center"
+              className="flex-1 sm:flex-initial bg-yellow-400 hover:bg-yellow-500 text-black px-6 md:px-8 py-3 rounded-full font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] flex items-center justify-center"
             >
               {isSubmitting ? (
                 <>
@@ -734,7 +734,7 @@ const CreateShipment = () => {
               type="button"
               onClick={() => navigate(-1)}
               disabled={isSubmitting}
-              className="sm:w-auto w-full border-2 border-gray-300 text-gray-700 hover:bg-gray-100 px-8 py-3 rounded-full font-semibold transition-all min-h-[44px]"
+              className="flex-1 sm:flex-initial border-2 border-gray-300 text-gray-700 hover:bg-gray-100 px-6 md:px-8 py-3 rounded-full font-semibold transition-all min-h-[44px]"
             >
               Cancel
             </button>
