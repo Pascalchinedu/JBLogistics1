@@ -438,7 +438,7 @@ const CreateWaybillShipment = () => {
         </div>
       </div>
 
-      <div className="container-responsive py-12">
+      <div className="container-responsive py-12 pb-20">
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
           {submitError && (
             <div className="mb-8 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
@@ -704,7 +704,7 @@ const CreateWaybillShipment = () => {
             </div>
           </div>
 
-          <div className="flex flex-row gap-3 md:gap-4 justify-center mt-8">
+          <div className="flex flex-row gap-3 md:gap-4 justify-center mt-8 mb-8">
             <button
               type="submit"
               disabled={isSubmitting}
