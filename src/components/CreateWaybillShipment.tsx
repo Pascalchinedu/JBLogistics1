@@ -1,21 +1,58 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { Package, MapPin, User, CheckCircle, Copy, AlertCircle } from 'lucide-react';
-import Header from './Header';
-import { db } from '../lib/firebase';
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
-import PaymentModal from './PaymentModal';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import {
+  Package,
+  MapPin,
+  User,
+  CheckCircle,
+  Copy,
+  AlertCircle,
+} from "lucide-react";
+import Header from "./Header";
+import { db } from "../lib/firebase";
+import { collection, addDoc, Timestamp } from "firebase/firestore";
+import PaymentModal from "./PaymentModal";
 
-const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL || "https://primary-production-872be.up.railway.app/webhook-test/689bf1f2-081c-449f-9991-776a748c33f8";
-const WEBHOOK_GET_URL = import.meta.env.VITE_WEBHOOK_GET_URL || "https://primary-production-872be.up.railway.app/webhook-test/689bf1f2-081c-449f-9991-776a748c33f8";
+const WEBHOOK_URL =
+  import.meta.env.VITE_WEBHOOK_URL ||
+  "https://primary-production-872be.up.railway.app/webhook/689bf1f2-081c-449f-9991-776a748c33f8";
+const WEBHOOK_GET_URL =
+  import.meta.env.VITE_WEBHOOK_GET_URL ||
+  "https://primary-production-872be.up.railway.app/webhook/689bf1f2-081c-449f-9991-776a748c33f8";
 
 const PORT_HARCOURT_AREAS = [
-  'Rumuola', 'Eliozu', 'Rumukurushi', 'Elelenwo', 'GRA Phase 1', 'GRA Phase 2',
-  'GRA Phase 3', 'Old GRA', 'Trans Amadi', 'Diobu', 'Borikiri', 'Town',
-  'Aggrey Road', 'Ikwerre Road', 'Aba Road', 'East-West Road', 'Rumuokoro',
-  'Rumuokwuta', 'Choba', 'Aluu', 'Alakahia', 'Eleme', 'Obio-Akpor', 'Oyigbo',
-  'Port Harcourt Township', 'D-Line', 'Woji', 'Mile 1', 'Mile 2', 'Mile 3', 'Other'
+  "Rumuola",
+  "Eliozu",
+  "Rumukurushi",
+  "Elelenwo",
+  "GRA Phase 1",
+  "GRA Phase 2",
+  "GRA Phase 3",
+  "Old GRA",
+  "Trans Amadi",
+  "Diobu",
+  "Borikiri",
+  "Town",
+  "Aggrey Road",
+  "Ikwerre Road",
+  "Aba Road",
+  "East-West Road",
+  "Rumuokoro",
+  "Rumuokwuta",
+  "Choba",
+  "Aluu",
+  "Alakahia",
+  "Eleme",
+  "Obio-Akpor",
+  "Oyigbo",
+  "Port Harcourt Township",
+  "D-Line",
+  "Woji",
+  "Mile 1",
+  "Mile 2",
+  "Mile 3",
+  "Other",
 ];
 
 interface FormData {
@@ -41,26 +78,26 @@ const CreateWaybillShipment = () => {
   const { user } = useAuth();
 
   const [formData, setFormData] = useState<FormData>({
-    pickupParkName: '',
-    senderName: '',
-    pickupRecipientName: '',
-    pickupRecipientIdNumber: '',
-    pickupRecipientPhone: '',
-    deliveryArea: '',
-    deliveryLandmark: '',
-    deliveryRecipientName: '',
-    deliveryRecipientPhone: '',
-    deliveryRecipientEmail: '',
-    packageDescription: ''
+    pickupParkName: "",
+    senderName: "",
+    pickupRecipientName: "",
+    pickupRecipientIdNumber: "",
+    pickupRecipientPhone: "",
+    deliveryArea: "",
+    deliveryLandmark: "",
+    deliveryRecipientName: "",
+    deliveryRecipientPhone: "",
+    deliveryRecipientEmail: "",
+    packageDescription: "",
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [waybillNumber, setWaybillNumber] = useState('');
-  const [submitError, setSubmitError] = useState('');
+  const [waybillNumber, setWaybillNumber] = useState("");
+  const [submitError, setSubmitError] = useState("");
   const [copied, setCopied] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [paymentReference, setPaymentReference] = useState('');
+  const [paymentReference, setPaymentReference] = useState("");
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
 
   const validatePhone = (phone: string): boolean => {
@@ -77,54 +114,71 @@ const CreateWaybillShipment = () => {
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
-    if (!formData.pickupParkName.trim()) newErrors.pickupParkName = 'Pickup location is required';
-    if (!formData.senderName.trim()) newErrors.senderName = 'Sender name is required';
-    if (!formData.pickupRecipientName.trim()) newErrors.pickupRecipientName = 'Recipient name is required';
-    if (!formData.pickupRecipientIdNumber.trim()) newErrors.pickupRecipientIdNumber = 'Recipient ID number is required';
+    if (!formData.pickupParkName.trim())
+      newErrors.pickupParkName = "Pickup location is required";
+    if (!formData.senderName.trim())
+      newErrors.senderName = "Sender name is required";
+    if (!formData.pickupRecipientName.trim())
+      newErrors.pickupRecipientName = "Recipient name is required";
+    if (!formData.pickupRecipientIdNumber.trim())
+      newErrors.pickupRecipientIdNumber = "Recipient ID number is required";
     if (!formData.pickupRecipientPhone) {
-      newErrors.pickupRecipientPhone = 'Recipient phone is required';
+      newErrors.pickupRecipientPhone = "Recipient phone is required";
     } else if (!validatePhone(formData.pickupRecipientPhone)) {
-      newErrors.pickupRecipientPhone = 'Phone must be +234 followed by 10 digits';
+      newErrors.pickupRecipientPhone =
+        "Phone must be +234 followed by 10 digits";
     }
 
-    if (!formData.deliveryArea) newErrors.deliveryArea = 'Delivery area is required';
-    if (!formData.deliveryLandmark.trim()) newErrors.deliveryLandmark = 'Delivery landmark is required';
-    if (!formData.deliveryRecipientName.trim()) newErrors.deliveryRecipientName = 'Recipient name is required';
+    if (!formData.deliveryArea)
+      newErrors.deliveryArea = "Delivery area is required";
+    if (!formData.deliveryLandmark.trim())
+      newErrors.deliveryLandmark = "Delivery landmark is required";
+    if (!formData.deliveryRecipientName.trim())
+      newErrors.deliveryRecipientName = "Recipient name is required";
     if (!formData.deliveryRecipientPhone) {
-      newErrors.deliveryRecipientPhone = 'Recipient phone is required';
+      newErrors.deliveryRecipientPhone = "Recipient phone is required";
     } else if (!validatePhone(formData.deliveryRecipientPhone)) {
-      newErrors.deliveryRecipientPhone = 'Phone must be +234 followed by 10 digits';
+      newErrors.deliveryRecipientPhone =
+        "Phone must be +234 followed by 10 digits";
     }
     if (!formData.deliveryRecipientEmail) {
-      newErrors.deliveryRecipientEmail = 'Recipient email is required';
+      newErrors.deliveryRecipientEmail = "Recipient email is required";
     } else if (!validateEmail(formData.deliveryRecipientEmail)) {
-      newErrors.deliveryRecipientEmail = 'Please enter a valid email address';
+      newErrors.deliveryRecipientEmail = "Please enter a valid email address";
     }
 
-    if (!formData.packageDescription.trim()) newErrors.packageDescription = 'Package description is required';
+    if (!formData.packageDescription.trim())
+      newErrors.packageDescription = "Package description is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'pickupRecipientPhone' | 'deliveryRecipientPhone') => {
+  const handlePhoneChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: "pickupRecipientPhone" | "deliveryRecipientPhone",
+  ) => {
     let value = e.target.value;
-    if (!value.startsWith('+234')) {
-      value = '+234';
+    if (!value.startsWith("+234")) {
+      value = "+234";
     }
-    const digits = value.slice(4).replace(/\D/g, '').slice(0, 10);
-    value = '+234' + digits;
-    setFormData(prev => ({ ...prev, [field]: value }));
+    const digits = value.slice(4).replace(/\D/g, "").slice(0, 10);
+    value = "+234" + digits;
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
@@ -144,10 +198,13 @@ const CreateWaybillShipment = () => {
     setShowPaymentModal(true);
   };
 
-  const handlePaymentSuccess = async (paymentData: { method: 'pickup_transfer' | 'dropoff_cod'; reference?: string }) => {
+  const handlePaymentSuccess = async (paymentData: {
+    method: "pickup_transfer" | "dropoff_cod";
+    reference?: string;
+  }) => {
     setIsPaymentProcessing(true);
     setIsSubmitting(true);
-    setSubmitError('');
+    setSubmitError("");
 
     const generatedWaybillNumber = generateWaybillNumber();
 
@@ -155,8 +212,8 @@ const CreateWaybillShipment = () => {
       const shipmentData = {
         waybillNumber: generatedWaybillNumber,
         trackingNumber: generatedWaybillNumber,
-        shipmentType: 'waybill',
-        userId: user?.uid || 'guest',
+        shipmentType: "waybill",
+        userId: user?.uid || "guest",
         userEmail: user?.email || formData.deliveryRecipientEmail,
         userName: formData.deliveryRecipientName,
         pickupParkName: formData.pickupParkName,
@@ -170,39 +227,46 @@ const CreateWaybillShipment = () => {
         deliveryArea: formData.deliveryArea,
         deliveryLandmark: formData.deliveryLandmark,
         packageDescription: formData.packageDescription,
-        serviceType: 'Waybill Transfer',
+        serviceType: "Waybill Transfer",
         paymentMethod: paymentData.method,
-        paymentStatus: paymentData.method === 'pickup_transfer' ? 'paid' : 'cod_pending',
-        status: 'processing',
-        currentLocation: 'Park pickup pending',
+        paymentStatus:
+          paymentData.method === "pickup_transfer" ? "paid" : "cod_pending",
+        status: "processing",
+        currentLocation: "Park pickup pending",
         price: 3000,
         createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now()
+        updatedAt: Timestamp.now(),
       };
 
-      const docRef = await addDoc(collection(db, 'shipments'), shipmentData);
+      const docRef = await addDoc(collection(db, "shipments"), shipmentData);
 
-      console.log('Waybill package saved to Firestore with ID:', docRef.id);
+      console.log("Waybill package saved to Firestore with ID:", docRef.id);
 
       const paymentRecordData = {
-        userId: user?.uid || 'guest',
+        userId: user?.uid || "guest",
         trackingId: generatedWaybillNumber,
         customerName: formData.deliveryRecipientName,
         customerEmail: formData.deliveryRecipientEmail,
         amount: 3000,
         paymentMethod: paymentData.method,
-        paymentReference: paymentData.reference || 'COD',
-        status: paymentData.method === 'pickup_transfer' ? 'processing' as const : 'cod_pending' as const,
-        createdAt: Timestamp.now()
+        paymentReference: paymentData.reference || "COD",
+        status:
+          paymentData.method === "pickup_transfer"
+            ? ("processing" as const)
+            : ("cod_pending" as const),
+        createdAt: Timestamp.now(),
       };
 
-      await addDoc(collection(db, 'payments'), paymentRecordData);
-      console.log('Payment record created for waybill:', generatedWaybillNumber);
+      await addDoc(collection(db, "payments"), paymentRecordData);
+      console.log(
+        "Payment record created for waybill:",
+        generatedWaybillNumber,
+      );
 
       const webhookPayload = {
         waybillNumber: generatedWaybillNumber,
         trackingNumber: generatedWaybillNumber,
-        shipmentType: 'waybill',
+        shipmentType: "waybill",
         pickupParkName: formData.pickupParkName,
         senderName: formData.senderName,
         pickupRecipientName: formData.pickupRecipientName,
@@ -213,44 +277,49 @@ const CreateWaybillShipment = () => {
         deliveryRecipientEmail: formData.deliveryRecipientEmail,
         deliveryAddress: `${formData.deliveryArea}, ${formData.deliveryLandmark}`,
         packageDescription: formData.packageDescription,
-        serviceType: 'Waybill Transfer',
+        serviceType: "Waybill Transfer",
         price: 3000,
         paymentMethod: paymentData.method,
-        paymentReference: paymentData.reference || 'COD',
-        paymentStatus: paymentData.method === 'pickup_transfer' ? 'paid' : 'cod_pending',
-        status: 'pending',
+        paymentReference: paymentData.reference || "COD",
+        paymentStatus:
+          paymentData.method === "pickup_transfer" ? "paid" : "cod_pending",
+        status: "pending",
         firestoreId: docRef.id,
         createdAt: new Date().toISOString(),
       };
 
-      console.log('Sending POST webhook to:', WEBHOOK_URL);
-      console.log('POST payload:', webhookPayload);
+      console.log("Sending POST webhook to:", WEBHOOK_URL);
+      console.log("POST payload:", webhookPayload);
 
       try {
         const postResponse = await fetch(WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(webhookPayload),
         });
 
-        console.log('POST webhook response status:', postResponse.status);
+        console.log("POST webhook response status:", postResponse.status);
         const postResponseText = await postResponse.text();
-        console.log('POST webhook response:', postResponseText);
+        console.log("POST webhook response:", postResponseText);
 
         if (postResponse.ok) {
-          console.log('✅ n8n POST webhook triggered successfully');
+          console.log("✅ n8n POST webhook triggered successfully");
         } else {
-          console.error('❌ POST webhook returned non-OK status:', postResponse.status, postResponseText);
+          console.error(
+            "❌ POST webhook returned non-OK status:",
+            postResponse.status,
+            postResponseText,
+          );
         }
       } catch (webhookError) {
-        console.error('❌ POST webhook notification failed:', webhookError);
+        console.error("❌ POST webhook notification failed:", webhookError);
       }
 
       const getWebhookParams = new URLSearchParams({
         waybillNumber: generatedWaybillNumber,
         trackingNumber: generatedWaybillNumber,
         firestoreId: docRef.id,
-        shipmentType: 'waybill',
+        shipmentType: "waybill",
         pickupParkName: formData.pickupParkName,
         senderName: formData.senderName,
         pickupRecipientName: formData.pickupRecipientName,
@@ -261,40 +330,48 @@ const CreateWaybillShipment = () => {
         deliveryRecipientEmail: formData.deliveryRecipientEmail,
         deliveryArea: formData.deliveryArea,
         deliveryLandmark: formData.deliveryLandmark,
-        serviceType: 'Waybill Transfer',
-        price: '3000',
+        serviceType: "Waybill Transfer",
+        price: "3000",
         paymentMethod: paymentData.method,
-        paymentReference: paymentData.reference || 'COD',
-        paymentStatus: paymentData.method === 'pickup_transfer' ? 'paid' : 'cod_pending',
+        paymentReference: paymentData.reference || "COD",
+        paymentStatus:
+          paymentData.method === "pickup_transfer" ? "paid" : "cod_pending",
       });
 
       const getWebhookUrl = `${WEBHOOK_GET_URL}?${getWebhookParams.toString()}`;
-      console.log('Sending GET webhook to:', getWebhookUrl);
+      console.log("Sending GET webhook to:", getWebhookUrl);
 
       try {
-        const getResponse = await fetch(getWebhookUrl, { method: 'GET' });
+        const getResponse = await fetch(getWebhookUrl, { method: "GET" });
 
-        console.log('GET webhook response status:', getResponse.status);
+        console.log("GET webhook response status:", getResponse.status);
         const getResponseText = await getResponse.text();
-        console.log('GET webhook response:', getResponseText);
+        console.log("GET webhook response:", getResponseText);
 
         if (getResponse.ok) {
-          console.log('✅ n8n GET webhook triggered successfully');
+          console.log("✅ n8n GET webhook triggered successfully");
         } else {
-          console.error('❌ GET webhook returned non-OK status:', getResponse.status, getResponseText);
+          console.error(
+            "❌ GET webhook returned non-OK status:",
+            getResponse.status,
+            getResponseText,
+          );
         }
       } catch (webhookError) {
-        console.error('❌ GET webhook notification failed:', webhookError);
+        console.error("❌ GET webhook notification failed:", webhookError);
       }
 
       setWaybillNumber(generatedWaybillNumber);
-      setPaymentReference(paymentData.reference || 'COD');
+      setPaymentReference(paymentData.reference || "COD");
       setShowPaymentModal(false);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
-      console.error('Package creation error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      setSubmitError(`Unable to create package: ${errorMessage}. Please try again or contact support.`);
+      console.error("Package creation error:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred";
+      setSubmitError(
+        `Unable to create package: ${errorMessage}. Please try again or contact support.`,
+      );
     } finally {
       setIsSubmitting(false);
       setIsPaymentProcessing(false);
@@ -312,23 +389,23 @@ const CreateWaybillShipment = () => {
   };
 
   const handleCreateAnother = () => {
-    setWaybillNumber('');
+    setWaybillNumber("");
     setFormData({
-      pickupParkName: '',
-      senderName: '',
-      pickupRecipientName: '',
-      pickupRecipientIdNumber: '',
-      pickupRecipientPhone: '',
-      deliveryArea: '',
-      deliveryLandmark: '',
-      deliveryRecipientName: '',
-      deliveryRecipientPhone: '',
-      deliveryRecipientEmail: '',
-      packageDescription: ''
+      pickupParkName: "",
+      senderName: "",
+      pickupRecipientName: "",
+      pickupRecipientIdNumber: "",
+      pickupRecipientPhone: "",
+      deliveryArea: "",
+      deliveryLandmark: "",
+      deliveryRecipientName: "",
+      deliveryRecipientPhone: "",
+      deliveryRecipientEmail: "",
+      packageDescription: "",
     });
     setErrors({});
-    setSubmitError('');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setSubmitError("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   if (waybillNumber) {
@@ -346,11 +423,14 @@ const CreateWaybillShipment = () => {
             </h1>
 
             <p className="text-sm md:text-base text-gray-600 mb-6 md:mb-8">
-              Your waybill transfer has been registered. Use the tracking number below to monitor your delivery.
+              Your waybill transfer has been registered. Use the tracking number
+              below to monitor your delivery.
             </p>
 
             <div className="bg-gray-50 rounded-lg p-4 md:p-8 mb-6 md:mb-8">
-              <p className="text-xs md:text-sm text-gray-600 mb-2">Tracking Number</p>
+              <p className="text-xs md:text-sm text-gray-600 mb-2">
+                Tracking Number
+              </p>
               <div className="flex items-center justify-center space-x-2">
                 <p className="text-lg md:text-3xl font-bold text-yellow-600 font-mono break-all">
                   {waybillNumber}
@@ -370,11 +450,15 @@ const CreateWaybillShipment = () => {
             </div>
 
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 md:p-6 mb-6 md:mb-8 text-left">
-              <h3 className="font-semibold text-gray-900 mb-3 md:mb-4 text-sm md:text-base">Package Summary</h3>
+              <h3 className="font-semibold text-gray-900 mb-3 md:mb-4 text-sm md:text-base">
+                Package Summary
+              </h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Package:</span>
-                  <span className="font-medium">{formData.packageDescription}</span>
+                  <span className="font-medium">
+                    {formData.packageDescription}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Service:</span>
@@ -395,7 +479,7 @@ const CreateWaybillShipment = () => {
                 Create Another
               </button>
               <button
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate("/dashboard")}
                 className="flex-1 sm:flex-initial border-2 border-amber-800 text-amber-800 hover:bg-amber-800 hover:text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold transition-all text-sm md:text-base"
               >
                 Back to Dashboard
@@ -418,8 +502,8 @@ const CreateWaybillShipment = () => {
         email={formData.deliveryRecipientEmail}
         onPaymentSuccess={handlePaymentSuccess}
         packageDetails={{
-          description: formData.packageDescription || 'Package',
-          serviceType: 'Waybill Transfer'
+          description: formData.packageDescription || "Package",
+          serviceType: "Waybill Transfer",
         }}
         isProcessing={isPaymentProcessing}
       />
@@ -459,13 +543,16 @@ const CreateWaybillShipment = () => {
           <div className="bg-white rounded-lg border border-gray-200 p-6 md:p-8 mb-6">
             <div className="flex items-center space-x-2 mb-6">
               <MapPin className="h-5 w-5 text-blue-600" />
-              <h2 className="text-xl font-semibold text-gray-900">Pickup Information</h2>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Pickup Information
+              </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="md:col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Pickup Location/Park Name <span className="text-red-500">*</span>
+                  Pickup Location/Park Name{" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -474,11 +561,13 @@ const CreateWaybillShipment = () => {
                   onChange={handleInputChange}
                   placeholder="e.g., ABC Motors Park, Lagos"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.pickupParkName ? 'border-red-500' : 'border-gray-300'
+                    errors.pickupParkName ? "border-red-500" : "border-gray-300"
                   }`}
                 />
                 {errors.pickupParkName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.pickupParkName}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.pickupParkName}
+                  </p>
                 )}
               </div>
 
@@ -493,11 +582,13 @@ const CreateWaybillShipment = () => {
                   onChange={handleInputChange}
                   placeholder="Enter sender's full name"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.senderName ? 'border-red-500' : 'border-gray-300'
+                    errors.senderName ? "border-red-500" : "border-gray-300"
                   }`}
                 />
                 {errors.senderName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.senderName}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.senderName}
+                  </p>
                 )}
               </div>
 
@@ -512,17 +603,22 @@ const CreateWaybillShipment = () => {
                   onChange={handleInputChange}
                   placeholder="Recipient's full name"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.pickupRecipientName ? 'border-red-500' : 'border-gray-300'
+                    errors.pickupRecipientName
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
                 {errors.pickupRecipientName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.pickupRecipientName}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.pickupRecipientName}
+                  </p>
                 )}
               </div>
 
               <div className="md:col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Recipient ID Number (NIN) <span className="text-red-500">*</span>
+                  Recipient ID Number (NIN){" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -531,11 +627,15 @@ const CreateWaybillShipment = () => {
                   onChange={handleInputChange}
                   placeholder="Enter NIN"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.pickupRecipientIdNumber ? 'border-red-500' : 'border-gray-300'
+                    errors.pickupRecipientIdNumber
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
                 {errors.pickupRecipientIdNumber && (
-                  <p className="text-red-500 text-sm mt-1">{errors.pickupRecipientIdNumber}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.pickupRecipientIdNumber}
+                  </p>
                 )}
               </div>
 
@@ -547,14 +647,18 @@ const CreateWaybillShipment = () => {
                   type="tel"
                   name="pickupRecipientPhone"
                   value={formData.pickupRecipientPhone}
-                  onChange={(e) => handlePhoneChange(e, 'pickupRecipientPhone')}
+                  onChange={(e) => handlePhoneChange(e, "pickupRecipientPhone")}
                   placeholder="+2348012345678"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.pickupRecipientPhone ? 'border-red-500' : 'border-gray-300'
+                    errors.pickupRecipientPhone
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
                 {errors.pickupRecipientPhone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.pickupRecipientPhone}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.pickupRecipientPhone}
+                  </p>
                 )}
               </div>
             </div>
@@ -563,35 +667,43 @@ const CreateWaybillShipment = () => {
           <div className="bg-white rounded-lg border border-gray-200 p-6 md:p-8 mb-6">
             <div className="flex items-center space-x-2 mb-6">
               <User className="h-5 w-5 text-blue-600" />
-              <h2 className="text-xl font-semibold text-gray-900">Delivery Information</h2>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Delivery Information
+              </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="md:col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Delivery Area (Port Harcourt) <span className="text-red-500">*</span>
+                  Delivery Area (Port Harcourt){" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="deliveryArea"
                   value={formData.deliveryArea}
                   onChange={handleInputChange}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.deliveryArea ? 'border-red-500' : 'border-gray-300'
+                    errors.deliveryArea ? "border-red-500" : "border-gray-300"
                   }`}
                 >
                   <option value="">Select delivery area...</option>
                   {PORT_HARCOURT_AREAS.map((area) => (
-                    <option key={area} value={area}>{area}</option>
+                    <option key={area} value={area}>
+                      {area}
+                    </option>
                   ))}
                 </select>
                 {errors.deliveryArea && (
-                  <p className="text-red-500 text-sm mt-1">{errors.deliveryArea}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.deliveryArea}
+                  </p>
                 )}
               </div>
 
               <div className="md:col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Delivery Landmark/Address <span className="text-red-500">*</span>
+                  Delivery Landmark/Address{" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -600,11 +712,15 @@ const CreateWaybillShipment = () => {
                   onChange={handleInputChange}
                   placeholder="e.g., Opposite GT Bank"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.deliveryLandmark ? 'border-red-500' : 'border-gray-300'
+                    errors.deliveryLandmark
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
                 {errors.deliveryLandmark && (
-                  <p className="text-red-500 text-sm mt-1">{errors.deliveryLandmark}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.deliveryLandmark}
+                  </p>
                 )}
               </div>
 
@@ -619,11 +735,15 @@ const CreateWaybillShipment = () => {
                   onChange={handleInputChange}
                   placeholder="Recipient's full name"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.deliveryRecipientName ? 'border-red-500' : 'border-gray-300'
+                    errors.deliveryRecipientName
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
                 {errors.deliveryRecipientName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.deliveryRecipientName}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.deliveryRecipientName}
+                  </p>
                 )}
               </div>
 
@@ -635,14 +755,20 @@ const CreateWaybillShipment = () => {
                   type="tel"
                   name="deliveryRecipientPhone"
                   value={formData.deliveryRecipientPhone}
-                  onChange={(e) => handlePhoneChange(e, 'deliveryRecipientPhone')}
+                  onChange={(e) =>
+                    handlePhoneChange(e, "deliveryRecipientPhone")
+                  }
                   placeholder="+2348012345678"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.deliveryRecipientPhone ? 'border-red-500' : 'border-gray-300'
+                    errors.deliveryRecipientPhone
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
                 {errors.deliveryRecipientPhone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.deliveryRecipientPhone}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.deliveryRecipientPhone}
+                  </p>
                 )}
               </div>
 
@@ -657,11 +783,15 @@ const CreateWaybillShipment = () => {
                   onChange={handleInputChange}
                   placeholder="recipient@email.com"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.deliveryRecipientEmail ? 'border-red-500' : 'border-gray-300'
+                    errors.deliveryRecipientEmail
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
                 {errors.deliveryRecipientEmail && (
-                  <p className="text-red-500 text-sm mt-1">{errors.deliveryRecipientEmail}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.deliveryRecipientEmail}
+                  </p>
                 )}
               </div>
             </div>
@@ -670,7 +800,9 @@ const CreateWaybillShipment = () => {
           <div className="bg-white rounded-lg border border-gray-200 p-6 md:p-8 mb-6">
             <div className="flex items-center space-x-2 mb-6">
               <Package className="h-5 w-5 text-blue-600" />
-              <h2 className="text-xl font-semibold text-gray-900">Package Details</h2>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Package Details
+              </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -685,11 +817,15 @@ const CreateWaybillShipment = () => {
                   onChange={handleInputChange}
                   placeholder="What are you sending?"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.packageDescription ? 'border-red-500' : 'border-gray-300'
+                    errors.packageDescription
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
                 {errors.packageDescription && (
-                  <p className="text-red-500 text-sm mt-1">{errors.packageDescription}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.packageDescription}
+                  </p>
                 )}
               </div>
 
@@ -698,7 +834,9 @@ const CreateWaybillShipment = () => {
                   Flat Price
                 </label>
                 <div className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50">
-                  <span className="text-2xl font-bold text-blue-600">₦3,000</span>
+                  <span className="text-2xl font-bold text-blue-600">
+                    ₦3,000
+                  </span>
                 </div>
               </div>
             </div>
@@ -716,7 +854,7 @@ const CreateWaybillShipment = () => {
                   Creating waybill transfer...
                 </>
               ) : (
-                'Create Waybill Transfer'
+                "Create Waybill Transfer"
               )}
             </button>
             <button
