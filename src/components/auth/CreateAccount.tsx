@@ -122,7 +122,7 @@ const CreateAccount = () => {
                 <h1 className="text-2xl font-bold text-gray-900 mb-4">Account Created Successfully!</h1>
                 <p className="text-gray-600 mb-6">
                   Welcome to JB Logistics! We've sent a verification email to <strong>{formData.email}</strong>. 
-                  Please check your inbox and click the verification link.
+                  Please check your inbox <strong>(including spam folder)</strong> and click the verification link to activate your account.
                 </p>
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400 mx-auto mb-4"></div>
                 <p className="text-sm text-gray-500">Redirecting to your dashboard...</p>
