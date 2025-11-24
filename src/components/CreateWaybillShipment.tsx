@@ -19,7 +19,7 @@ const WEBHOOK_URL =
   "https://primary-production-872be.up.railway.app/webhook-test/689bf1f2-081c-449f-9991-776a748c33f8";
 const WEBHOOK_GET_URL =
   import.meta.env.VITE_WEBHOOK_GET_URL ||
-  "https://primary-production-872be.up.railway.app/webhook/689bf1f2-081c-449f-9991-776a748c33f8";
+  "https://primary-production-872be.up.railway.app/webhook-test/689bf1f2-081c-449f-9991-776a748c33f8";
 
 const PORT_HARCOURT_AREAS = [
   "Rumuola",
