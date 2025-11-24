@@ -111,13 +111,17 @@ const Dashboard = () => {
       setResendingVerification(true);
       setVerificationMessage('');
       await resendVerification();
-      setVerificationMessage('Verification email sent! Please check your inbox.');
+      setVerificationMessage('Verification email sent! Please check your inbox (including spam folder).');
     } catch (error) {
       console.error('Resend verification error:', error);
       if (error instanceof Error) {
-        setVerificationMessage(error.message);
+        if (error.message.includes('too-many-requests') || error.message.includes('auth/too-many-requests')) {
+          setVerificationMessage('Too many requests. Please wait a few minutes before trying again.');
+        } else {
+          setVerificationMessage(error.message);
+        }
       } else {
-        setVerificationMessage('Failed to send verification email. Please try again.');
+        setVerificationMessage('Failed to send verification email. Please try again later.');
       }
     } finally {
       setResendingVerification(false);
@@ -319,7 +323,7 @@ const Dashboard = () => {
                   <div>
                     <span className="text-yellow-800 font-medium">Email verification required</span>
                     <p className="text-yellow-700 text-sm mt-1">
-                      Please check your email and click the verification link to fully activate your account.
+                      Please check your email <strong>(including spam folder)</strong> and click the verification link to fully activate your account.
                     </p>
                     {verificationMessage && (
                       <p className={`text-sm mt-2 ${

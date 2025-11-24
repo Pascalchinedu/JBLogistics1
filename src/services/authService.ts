@@ -178,12 +178,18 @@ export class AuthService {
       });
       
       lastVerificationSent = now;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Resend verification error:', error);
+      
+      // Handle Firebase rate limiting error specifically
+      if (error?.code === 'auth/too-many-requests') {
+        throw new Error('Too many verification emails sent. Please wait a few minutes before trying again.');
+      }
+      
       if (error instanceof Error) {
         throw error;
       }
-      throw new Error('Failed to send verification email. Please try again.');
+      throw new Error('Failed to send verification email. Please try again later.');
     }
   }
 
