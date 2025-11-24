@@ -152,6 +152,43 @@ const AdminPaymentManagement = () => {
     }
   };
 
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'processing':
+      case 'pending':
+      case 'cod_pending':
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
+            <Clock className="h-3 w-3 mr-1" />
+            Pending
+          </span>
+        );
+      case 'received':
+      case 'paid':
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+            <CheckCircle className="h-3 w-3 mr-1" />
+            Received
+          </span>
+        );
+      case 'declined':
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+            <svg className="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Declined
+          </span>
+        );
+      default:
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
+            {status}
+          </span>
+        );
+    }
+  };
+
   const filterPayments = (payments: Payment[]) => {
     if (statusFilter === 'all') return payments;
     
@@ -349,48 +386,31 @@ const AdminPaymentManagement = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center space-x-2">
-                        {payment.status === 'processing' ? (
-                          <>
-                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
-                              <Clock className="h-3 w-3 mr-1" />
-                              Processing
-                            </span>
-                            <button
-                              onClick={() => handleConfirmPayment(payment.id)}
-                              disabled={confirmingPaymentId === payment.id}
-                              className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              {confirmingPaymentId === payment.id ? (
-                                <span className="flex items-center">
-                                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
-                                  Confirming...
-                                </span>
-                              ) : (
-                                'Confirm'
-                              )}
-                            </button>
-                            <button
-                              onClick={() => handleDeclinePayment(payment.id)}
-                              disabled={confirmingPaymentId === payment.id}
-                              className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-md text-xs font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              Decline
-                            </button>
-                          </>
-                        ) : payment.status === 'received' ? (
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            Received
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
-                            <svg className="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                            Declined
-                          </span>
-                        )}
+                      <div className="space-y-2">
+                        <div>{getStatusBadge(payment.status)}</div>
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => handleConfirmPayment(payment.id)}
+                            disabled={confirmingPaymentId === payment.id}
+                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {confirmingPaymentId === payment.id ? (
+                              <span className="flex items-center">
+                                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
+                                Confirming...
+                              </span>
+                            ) : (
+                              'Confirm'
+                            )}
+                          </button>
+                          <button
+                            onClick={() => handleDeclinePayment(payment.id)}
+                            disabled={confirmingPaymentId === payment.id}
+                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-md text-xs font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            Decline
+                          </button>
+                        </div>
                       </div>
                     </td>
                   </tr>
