@@ -17,13 +17,13 @@ const Header = () => {
   useEffect(() => {
     // Set active navigation based on current path
     const path = location.pathname;
-    if (path.includes('/services')) {
+    if (path === '/services' || path.startsWith('/services/')) {
       setActiveNav('services');
-    } else if (path.includes('/tracking')) {
+    } else if (path === '/tracking') {
       setActiveNav('tracking');
-    } else if (path.includes('/about')) {
+    } else if (path === '/about') {
       setActiveNav('about');
-    } else if (path.includes('/contact')) {
+    } else if (path === '/contact') {
       setActiveNav('contact');
     } else {
       setActiveNav('');
@@ -86,7 +86,7 @@ const Header = () => {
                 Services
               </button>
               <button
-                onClick={() => handleNavigation('/services/tracking', 'tracking')}
+                onClick={() => handleNavigation('/tracking', 'tracking')}
                 className={`nav-link px-3 py-2 text-base font-medium transition-all btn-click-feedback ${
                   activeNav === 'tracking' ? 'active' : 'text-gray-900 hover:text-yellow-600'
                 }`}
@@ -104,7 +104,7 @@ const Header = () => {
                 About
               </button>
               <button
-                onClick={() => handleNavigation('/services/contact', 'contact')}
+                onClick={() => handleNavigation('/contact', 'contact')}
                 className={`nav-link px-3 py-2 text-base font-medium transition-all btn-click-feedback ${
                   activeNav === 'contact' ? 'active' : 'text-gray-900 hover:text-yellow-600'
                 }`}
@@ -205,7 +205,7 @@ const Header = () => {
               Services
             </button>
             <button
-              onClick={() => handleNavigation('/services/tracking', 'tracking')}
+              onClick={() => handleNavigation('/tracking', 'tracking')}
               className={`block w-full text-left px-3 py-2 font-medium transition-all btn-click-feedback ${
                 activeNav === 'tracking' ? 'text-yellow-600 bg-yellow-50' : 'text-gray-900 hover:text-yellow-600'
               }`}
@@ -221,7 +221,7 @@ const Header = () => {
               About
             </button>
             <button
-              onClick={() => handleNavigation('/services/contact', 'contact')}
+              onClick={() => handleNavigation('/contact', 'contact')}
               className={`block w-full text-left px-3 py-2 font-medium transition-all btn-click-feedback ${
                 activeNav === 'contact' ? 'text-yellow-600 bg-yellow-50' : 'text-gray-900 hover:text-yellow-600'
               }`}

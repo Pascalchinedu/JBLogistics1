@@ -119,7 +119,7 @@ const NationwideWaybill = () => {
                   Get Quote
                 </button>
                 <button
-                  onClick={() => navigate('/services/tracking')}
+                  onClick={() => navigate('/tracking')}
                   className="border-2 border-white text-white hover:bg-white hover:text-amber-800 px-8 py-4 rounded-full text-lg font-semibold transition-all"
                 >
                   Track Package

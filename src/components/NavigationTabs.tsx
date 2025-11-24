@@ -86,7 +86,7 @@ const NavigationTabs = () => {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900">Track Your Package</h3>
             <button
-              onClick={() => handleNavigation('/services/tracking')}
+              onClick={() => handleNavigation('/tracking')}
               className="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded-md font-semibold transition-all btn-click-feedback"
               disabled={isNavigating}
             >

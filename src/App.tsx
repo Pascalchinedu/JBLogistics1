@@ -10,7 +10,6 @@ import SpecialServices from './components/services/SpecialServices';
 import ServicesTracking from './components/services/ServicesTracking';
 import ServicesAbout from './components/services/ServicesAbout';
 import ServicesContact from './components/services/ServicesContact';
-import AboutUs from './components/AboutUs';
 import CreateShipment from './components/CreateShipment';
 import CreateWaybillShipment from './components/CreateWaybillShipment';
 import AdminStatusUpdate from './components/AdminStatusUpdate';
@@ -70,12 +69,11 @@ function App() {
           <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
           <Route path="/create-account" element={<PageTransition><CreateAccount /></PageTransition>} />
           <Route path="/services" element={<PageTransition><MainServices /></PageTransition>} />
-          <Route path="/services/tracking" element={<PageTransition><ServicesTracking /></PageTransition>} />
-          <Route path="/services/about" element={<PageTransition><ServicesAbout /></PageTransition>} />
-          <Route path="/services/contact" element={<PageTransition><ServicesContact /></PageTransition>} />
+          <Route path="/tracking" element={<PageTransition><ServicesTracking /></PageTransition>} />
+          <Route path="/about" element={<PageTransition><ServicesAbout /></PageTransition>} />
+          <Route path="/contact" element={<PageTransition><ServicesContact /></PageTransition>} />
           <Route path="/services/nationwide-waybill" element={<PageTransition><NationwideWaybill /></PageTransition>} />
           <Route path="/services/special-services" element={<PageTransition><SpecialServices /></PageTransition>} />
-          <Route path="/about" element={<PageTransition><AboutUs /></PageTransition>} />
           <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
           <Route path="/create-shipment" element={<PageTransition><CreateShipment /></PageTransition>} />
           <Route path="/create-waybill-shipment" element={<PageTransition><CreateWaybillShipment /></PageTransition>} />

@@ -281,7 +281,7 @@ const MainServices = () => {
             </p>
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
               <button
-                onClick={() => handleNavigation('/services/contact')}
+                onClick={() => handleNavigation('/contact')}
                 className="inline-flex items-center bg-yellow-400 hover:bg-yellow-500 text-black px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg btn-click-feedback"
                 disabled={isNavigating}
               >
@@ -289,7 +289,7 @@ const MainServices = () => {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </button>
               <button
-                onClick={() => handleNavigation('/services/tracking')}
+                onClick={() => handleNavigation('/tracking')}
                 className="border-2 border-white text-white hover:bg-white hover:text-amber-800 px-8 py-4 rounded-lg text-lg font-semibold transition-all btn-click-feedback"
                 disabled={isNavigating}
               >

@@ -178,7 +178,7 @@ const WhyChooseUs = () => {
                   View Our Services
                 </button>
                 <button 
-                  onClick={() => handleNavigation('/services/contact')}
+                  onClick={() => handleNavigation('/contact')}
                   className="border-2 border-white text-white hover:bg-white hover:text-amber-800 px-8 py-3 rounded-lg font-semibold transition-all btn-click-feedback"
                   disabled={isNavigating}
                 >

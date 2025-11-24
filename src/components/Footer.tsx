@@ -13,8 +13,8 @@ const Footer = () => {
     ],
     support: [
       { label: 'About Us', href: '/about' },
-      { label: 'Contact', href: '/services/contact' },
-      { label: 'Track Package', href: '/services/tracking' },
+      { label: 'Contact', href: '/contact' },
+      { label: 'Track Package', href: '/tracking' },
     ],
   };
 

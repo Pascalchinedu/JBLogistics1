@@ -79,7 +79,7 @@ const Hero = () => {
     }
     setIsNavigating(true);
     setTimeout(() => {
-      navigate('/services/tracking');
+      navigate('/tracking');
       setIsNavigating(false);
     }, 150);
   };
