@@ -16,10 +16,10 @@ import PaymentModal from "./PaymentModal";
 
 const WEBHOOK_URL =
   import.meta.env.VITE_WEBHOOK_URL ||
-  "https://moojjvple.app.n8n.cloud/webhook-test/jblogistics";
+  "https://moojjvple.app.n8n.cloud/webhook/jblogistics";
 const WEBHOOK_GET_URL =
   import.meta.env.VITE_WEBHOOK_GET_URL ||
-  "https://moojjvple.app.n8n.cloud/webhook-test/jblogistics";
+  "https://moojjvple.app.n8n.cloud/webhook/jblogistics";
 
 const PORT_HARCOURT_AREAS = [
   "Rumuola",
