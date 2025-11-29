@@ -16,10 +16,10 @@ import PaymentModal from "./PaymentModal";
 
 const WEBHOOK_URL =
   import.meta.env.VITE_WEBHOOK_URL ||
-  "https://primary-production-872be.up.railway.app/webhook/689bf1f2-081c-449f-9991-776a748c33f8";
+  "https://moojjvple.app.n8n.cloud/webhook-test/jblogistics";
 const WEBHOOK_GET_URL =
   import.meta.env.VITE_WEBHOOK_GET_URL ||
-  "https://primary-production-872be.up.railway.app/webhook/689bf1f2-081c-449f-9991-776a748c33f8";
+  "https://moojjvple.app.n8n.cloud/webhook-test/jblogistics";
 
 const PORT_HARCOURT_AREAS = [
   "Rumuola",

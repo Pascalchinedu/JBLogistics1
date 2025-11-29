@@ -58,17 +58,12 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <a href="/" className="flex flex-col hover:opacity-80 transition-opacity cursor-pointer">
-                <div className="flex items-center">
-                  <span className="text-2xl font-light text-black tracking-tight">JB</span>
-                  <div className="ml-1 flex space-x-1">
-                    <div className="w-6 h-0.5 bg-yellow-400 transform rotate-12 translate-y-1"></div>
-                    <div className="w-4 h-0.5 bg-yellow-400 transform rotate-12"></div>
-                    <div className="w-3 h-0.5 bg-yellow-400 transform rotate-12 -translate-y-1"></div>
-                  </div>
-                </div>
-                <div className="text-xs font-light text-black tracking-wider -mt-1">LOGISTICS</div>
-                <div className="text-xs text-gray-600 italic -mt-0.5">on time, every time</div>
+              <a href="/" className="flex items-center hover:opacity-80 transition-opacity cursor-pointer">
+                <img 
+                  src="/jb-logo.png" 
+                  alt="JB Logistics - On Time, Every Time" 
+                  className="h-14 w-auto object-contain"
+                />
               </a>
             </div>
           </div>
