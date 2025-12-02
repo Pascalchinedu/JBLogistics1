@@ -16,10 +16,10 @@ import PaymentModal from "./PaymentModal";
 
 const WEBHOOK_URL =
   import.meta.env.VITE_WEBHOOK_URL ||
-  "https://moojjvple.app.n8n.cloud/webhook/jblogistics";
+  "https://moojjvple.app.n8n.cloud/webhook-test/jblogistics";
 const WEBHOOK_GET_URL =
   import.meta.env.VITE_WEBHOOK_GET_URL ||
-  "https://moojjvple.app.n8n.cloud/webhook/jblogistics";
+  "https://moojjvple.app.n8n.cloud/webhook-test/jblogistics";
 
 const PORT_HARCOURT_AREAS = [
   "Rumuola",
@@ -276,6 +276,9 @@ const CreateWaybillShipment = () => {
         deliveryRecipientPhone: formData.deliveryRecipientPhone,
         deliveryRecipientEmail: formData.deliveryRecipientEmail,
         deliveryAddress: `${formData.deliveryArea}, ${formData.deliveryLandmark}`,
+        dropoffName: formData.deliveryRecipientName,
+        dropoffPhone: formData.deliveryRecipientPhone,
+        dropoffEmail: formData.deliveryRecipientEmail,
         packageDescription: formData.packageDescription,
         serviceType: "Waybill Transfer",
         price: 3000,
@@ -330,6 +333,9 @@ const CreateWaybillShipment = () => {
         deliveryRecipientEmail: formData.deliveryRecipientEmail,
         deliveryArea: formData.deliveryArea,
         deliveryLandmark: formData.deliveryLandmark,
+        dropoffName: formData.deliveryRecipientName,
+        dropoffPhone: formData.deliveryRecipientPhone,
+        dropoffEmail: formData.deliveryRecipientEmail,
         serviceType: "Waybill Transfer",
         price: "3000",
         paymentMethod: paymentData.method,

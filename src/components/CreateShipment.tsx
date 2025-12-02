@@ -18,10 +18,10 @@ import PaymentModal from "./PaymentModal";
 
 const WEBHOOK_URL =
   import.meta.env.VITE_WEBHOOK_URL ||
-  "https://moojjvple.app.n8n.cloud/webhook/jblogistics";
+  "https://moojjvple.app.n8n.cloud/webhook-test/jblogistics";
 const WEBHOOK_GET_URL =
   import.meta.env.VITE_WEBHOOK_GET_URL ||
-  "https://moojjvple.app.n8n.cloud/webhook/jblogistics";
+  "https://moojjvple.app.n8n.cloud/webhook-test/jblogistics";
 
 const PORT_HARCOURT_AREAS = [
   "Rumuola",
@@ -277,6 +277,9 @@ const CreateShipment = () => {
         pickupAddress: `${formData.pickupArea}, ${formData.pickupLandmark}`,
         receiverPhone: formData.receiverPhone,
         deliveryAddress: `${formData.deliveryArea}, ${formData.deliveryLandmark}`,
+        dropoffName: "",
+        dropoffPhone: formData.receiverPhone,
+        dropoffEmail: "",
         serviceType: formData.serviceType,
         status: "pending",
         price: price,
@@ -329,6 +332,9 @@ const CreateShipment = () => {
         deliveryArea: formData.deliveryArea,
         deliveryLandmark: formData.deliveryLandmark,
         receiverPhone: formData.receiverPhone,
+        dropoffName: "",
+        dropoffPhone: formData.receiverPhone,
+        dropoffEmail: "",
         serviceType: formData.serviceType,
         price: price,
         paymentMethod: paymentData.method,
