@@ -58,8 +58,8 @@ const PORT_HARCOURT_AREAS = [
 interface FormData {
   pickupParkName: string;
   senderName: string;
-  pickupRecipientName: string;
-  pickupRecipientIdNumber: string;
+  senderPhone: string;
+  waybillId: string;
   pickupRecipientPhone: string;
   deliveryArea: string;
   deliveryLandmark: string;
@@ -80,8 +80,8 @@ const CreateWaybillShipment = () => {
   const [formData, setFormData] = useState<FormData>({
     pickupParkName: "",
     senderName: "",
-    pickupRecipientName: "",
-    pickupRecipientIdNumber: "",
+    senderPhone: "",
+    waybillId: "",
     pickupRecipientPhone: "",
     deliveryArea: "",
     deliveryLandmark: "",
@@ -118,10 +118,13 @@ const CreateWaybillShipment = () => {
       newErrors.pickupParkName = "Pickup location is required";
     if (!formData.senderName.trim())
       newErrors.senderName = "Sender name is required";
-    if (!formData.pickupRecipientName.trim())
-      newErrors.pickupRecipientName = "Recipient name is required";
-    if (!formData.pickupRecipientIdNumber.trim())
-      newErrors.pickupRecipientIdNumber = "Recipient ID number is required";
+    if (!formData.senderPhone) {
+      newErrors.senderPhone = "Sender phone is required";
+    } else if (!validatePhone(formData.senderPhone)) {
+      newErrors.senderPhone = "Phone must be +234 followed by 10 digits";
+    }
+    if (!formData.waybillId.trim())
+      newErrors.waybillId = "Waybill number or ID is required";
     if (!formData.pickupRecipientPhone) {
       newErrors.pickupRecipientPhone = "Recipient phone is required";
     } else if (!validatePhone(formData.pickupRecipientPhone)) {
@@ -168,7 +171,7 @@ const CreateWaybillShipment = () => {
 
   const handlePhoneChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: "pickupRecipientPhone" | "deliveryRecipientPhone",
+    field: "senderPhone" | "pickupRecipientPhone" | "deliveryRecipientPhone",
   ) => {
     let value = e.target.value;
     if (!value.startsWith("+234")) {
@@ -218,8 +221,8 @@ const CreateWaybillShipment = () => {
         userName: formData.deliveryRecipientName,
         pickupParkName: formData.pickupParkName,
         senderName: formData.senderName,
-        pickupRecipientName: formData.pickupRecipientName,
-        pickupRecipientIdNumber: formData.pickupRecipientIdNumber,
+        senderPhone: formData.senderPhone,
+        waybillId: formData.waybillId,
         pickupRecipientPhone: formData.pickupRecipientPhone,
         deliveryRecipientName: formData.deliveryRecipientName,
         deliveryRecipientPhone: formData.deliveryRecipientPhone,
@@ -269,8 +272,8 @@ const CreateWaybillShipment = () => {
         shipmentType: "waybill",
         pickupParkName: formData.pickupParkName,
         senderName: formData.senderName,
-        pickupRecipientName: formData.pickupRecipientName,
-        pickupRecipientIdNumber: formData.pickupRecipientIdNumber,
+        senderPhone: formData.senderPhone,
+        waybillId: formData.waybillId,
         pickupRecipientPhone: formData.pickupRecipientPhone,
         deliveryRecipientName: formData.deliveryRecipientName,
         deliveryRecipientPhone: formData.deliveryRecipientPhone,
@@ -325,8 +328,8 @@ const CreateWaybillShipment = () => {
         shipmentType: "waybill",
         pickupParkName: formData.pickupParkName,
         senderName: formData.senderName,
-        pickupRecipientName: formData.pickupRecipientName,
-        pickupRecipientIdNumber: formData.pickupRecipientIdNumber,
+        senderPhone: formData.senderPhone,
+        waybillId: formData.waybillId,
         pickupRecipientPhone: formData.pickupRecipientPhone,
         deliveryRecipientName: formData.deliveryRecipientName,
         deliveryRecipientPhone: formData.deliveryRecipientPhone,
@@ -399,8 +402,8 @@ const CreateWaybillShipment = () => {
     setFormData({
       pickupParkName: "",
       senderName: "",
-      pickupRecipientName: "",
-      pickupRecipientIdNumber: "",
+      senderPhone: "",
+      waybillId: "",
       pickupRecipientPhone: "",
       deliveryArea: "",
       deliveryLandmark: "",
@@ -600,47 +603,43 @@ const CreateWaybillShipment = () => {
 
               <div className="md:col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Recipient Name <span className="text-red-500">*</span>
+                  Sender's Phone <span className="text-red-500">*</span>
                 </label>
                 <input
-                  type="text"
-                  name="pickupRecipientName"
-                  value={formData.pickupRecipientName}
-                  onChange={handleInputChange}
-                  placeholder="Recipient's full name"
+                  type="tel"
+                  name="senderPhone"
+                  value={formData.senderPhone}
+                  onChange={(e) => handlePhoneChange(e, "senderPhone")}
+                  placeholder="+2348012345678"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.pickupRecipientName
-                      ? "border-red-500"
-                      : "border-gray-300"
+                    errors.senderPhone ? "border-red-500" : "border-gray-300"
                   }`}
                 />
-                {errors.pickupRecipientName && (
+                {errors.senderPhone && (
                   <p className="text-red-500 text-sm mt-1">
-                    {errors.pickupRecipientName}
+                    {errors.senderPhone}
                   </p>
                 )}
               </div>
 
               <div className="md:col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Recipient ID Number (NIN){" "}
+                  Waybill Number or ID{" "}
                   <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
-                  name="pickupRecipientIdNumber"
-                  value={formData.pickupRecipientIdNumber}
+                  name="waybillId"
+                  value={formData.waybillId}
                   onChange={handleInputChange}
-                  placeholder="Enter NIN"
+                  placeholder="Enter waybill number or ID"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.pickupRecipientIdNumber
-                      ? "border-red-500"
-                      : "border-gray-300"
+                    errors.waybillId ? "border-red-500" : "border-gray-300"
                   }`}
                 />
-                {errors.pickupRecipientIdNumber && (
+                {errors.waybillId && (
                   <p className="text-red-500 text-sm mt-1">
-                    {errors.pickupRecipientIdNumber}
+                    {errors.waybillId}
                   </p>
                 )}
               </div>
