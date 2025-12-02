@@ -16,10 +16,10 @@ import PaymentModal from "./PaymentModal";
 
 const WEBHOOK_URL =
   import.meta.env.VITE_WEBHOOK_URL ||
-  "https://moojjvple.app.n8n.cloud/webhook-test/jblogistics";
+  "https://moojjvple.app.n8n.cloud/webhook/jblogistics";
 const WEBHOOK_GET_URL =
   import.meta.env.VITE_WEBHOOK_GET_URL ||
-  "https://moojjvple.app.n8n.cloud/webhook-test/jblogistics";
+  "https://moojjvple.app.n8n.cloud/webhook/jblogistics";
 
 const PORT_HARCOURT_AREAS = [
   "Rumuola",
@@ -624,8 +624,7 @@ const CreateWaybillShipment = () => {
 
               <div className="md:col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Waybill Number or ID{" "}
-                  <span className="text-red-500">*</span>
+                  Waybill Number or ID <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
