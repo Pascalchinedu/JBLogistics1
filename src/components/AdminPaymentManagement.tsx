@@ -273,7 +273,7 @@ const AdminPaymentManagement = () => {
               }`}
             >
               <span className="md:hidden">⏳ Pending</span>
-              <span className="hidden md:inline">Transfer - Pending ({filterPayments(payments).filter(p => statusFilter !== 'transfer_pending').filter(p => (p.paymentMethod === 'pickup_transfer' || p.paymentMethod === 'bank_transfer' || !p.paymentMethod) && (p.status === 'processing' || p.status === 'pending')).length})</span>
+              <span className="hidden md:inline">Transfer - Pending ({payments.filter(payment => (payment.paymentMethod === 'pickup_transfer' || payment.paymentMethod === 'bank_transfer' || !payment.paymentMethod) && (payment.status === 'processing' || payment.status === 'pending')).length})</span>
             </button>
             <button
               onClick={() => setStatusFilter('transfer_confirmed')}

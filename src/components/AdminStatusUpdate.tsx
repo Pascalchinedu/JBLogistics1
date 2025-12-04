@@ -80,10 +80,10 @@ const AdminStatusUpdate = () => {
 
       if (!querySnapshot.empty) {
         const packageDoc = querySnapshot.docs[0];
-        const data = packageDoc.data() as PackageData;
+        const data = packageDoc.data() as Omit<PackageData, 'id'>;
         setPackageData({
-          id: packageDoc.id,
-          ...data
+          ...data,
+          id: packageDoc.id
         });
         setNewStatus(data.status || '');
         setNewLocation(data.currentLocation || '');
