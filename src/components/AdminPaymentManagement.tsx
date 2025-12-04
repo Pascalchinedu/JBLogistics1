@@ -189,36 +189,32 @@ const AdminPaymentManagement = () => {
     }
   };
 
+  const MAX_ROWS = 20;
+
   const filterPayments = (payments: Payment[]) => {
-    if (statusFilter === 'all') return payments;
+    let filtered = payments;
     
     if (statusFilter === 'transfer_pending') {
-      return payments.filter(p => 
+      filtered = payments.filter(p => 
         (p.paymentMethod === 'pickup_transfer' || p.paymentMethod === 'bank_transfer' || !p.paymentMethod) && 
         (p.status === 'processing' || p.status === 'pending')
       );
-    }
-    
-    if (statusFilter === 'transfer_confirmed') {
-      return payments.filter(p => 
+    } else if (statusFilter === 'transfer_confirmed') {
+      filtered = payments.filter(p => 
         (p.paymentMethod === 'pickup_transfer' || p.paymentMethod === 'bank_transfer' || !p.paymentMethod) && 
         (p.status === 'received' || p.status === 'paid')
       );
-    }
-    
-    if (statusFilter === 'cod') {
-      return payments.filter(p => 
+    } else if (statusFilter === 'cod') {
+      filtered = payments.filter(p => 
         p.paymentMethod === 'dropoff_cod' || 
         p.paymentMethod === 'cod' || 
         p.status === 'cod_pending'
       );
+    } else if (statusFilter === 'declined') {
+      filtered = payments.filter(p => p.status === 'declined');
     }
     
-    if (statusFilter === 'declined') {
-      return payments.filter(p => p.status === 'declined');
-    }
-    
-    return payments;
+    return filtered.slice(0, MAX_ROWS);
   };
 
   if (loading) {
